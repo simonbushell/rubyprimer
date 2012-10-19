@@ -91,11 +91,11 @@ class TestSnippet < Test::Unit::TestCase
 	end
 
 	def test_back_translate
-		aaseq = "MAAFWY"
+		aaseq = "DKSNRR"
 		d = @snippet.backTranslate(aaseq)
 		assert_instance_of(Snippet, d)
-		assert_equal(d.translate, aaseq)
-		assert_equal(d.start, 240)
-		assert_equal(d.end, 258)
+		assert_equal(aaseq, d.translate)
+		assert_equal(d.start, 732)
+		assert_equal(d.end, 749)
 	end
 end

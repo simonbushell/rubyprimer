@@ -31,9 +31,9 @@ class Snippet
 
 	def initialize(snippetSequence, templateSequence)
 		@snippet = snippetSequence
-		@template = templateSequence
+		@template = templateSequence.strip.delete("\n\t")
 		@BRSnippet = Bio::Sequence::NA.new(@snippet)
-		@BRTemplate = Bio::Sequence::NA.new(@snippet)
+		@BRTemplate = Bio::Sequence::NA.new(@template)
 		if @BRSnippet.illegal_bases.any? or @BRTemplate.illegal_bases.any? then raise DNAFormatError end
 		@start = @template.index(@snippet)
 		raise SnippetError unless @start 
@@ -44,7 +44,14 @@ class Snippet
 		@BRSnippet.send(method_name, *args, &block)
 	end
 
-	def backTranslate(aaSeq)
+	def backTranslate(substring)
+		aaTrans = @BRTemplate.translate.strip.delete("\n\t")
+		raise SnippetError unless aaTrans
+		subStart = aaTrans.index(substring)
+		raise SnippetError unless subStart
+		subStart = subStart * 3
+		subEnd = subStart + substring.length * 3
+		return Snippet.new(@template[subStart, substring.length * 3], @template)
 	end
 
 	def to_s
@@ -61,38 +68,38 @@ class Snippet
 end
 
 
-# @testtemplate = "atgcccgctgaaacgaccgtatccggcgcgcaccccgccgccaaactgccgatttacatc
-# 		ctgccctgcttcctttggataggcatcgtcccctttaccttcgcgctcaaactgaaaccg
-# 		tcgcccgacttttaccacgatgccgccgccgcagccggcctgattgtcctgttgttcctc
-# 		acggcaggaaaaaaactgtttgatgtcaaaatccccgccatcagcttccttctgtttgca
-# 		atggcggcgttttggtatcttcaggcacgcctgatgaacctgatttaccccggtatgaac
-# 		gacatcgtctcttggattttcatcttgctcgccgtcagcgcgtgggcctgccggagcttg
-# 		gtcgcacacttcggacaagaacgcatcgtgaccctgtttgcctggtcgctgcttatcggc
-# 		tccctgcttcaatcctgcatcgtcgtcatccagtttgccggctgggaagacacccctctg
-# 		tttcaaaacatcatcgtttacagcgggcaaggcgtaatcggacacatcgggcagcgcaac
-# 		aacctcggacactacctcatgtggggcatactcgccgccgcctacctcaacggacaacga
-# 		aaaatccccgccgccctcggcgtaatctgcctgattatgcagaccgccgttttaggtttg
-# 		gtcaactcgcgcaccatcttgacctacatagccgccatcgccctcatccttcccttctgg
-# 		tatttccgttcggacaaatccaacaggcggacgatgctcggcatagccgcagccgtattc
-# 		cttaccgcgctgttccaattttccatgaacaccattctggaaacctttactggcatccgc
-# 		tacgaaactgccgtcgaacgcgtcgccaacggcggtttcacagacttgccgcgccaaatc
-# 		gaatggaataaagcccttgccgccttccagtccgccccgatattcgggcacggctggaac
-# 		agttttgcccaacaaaccttcctcatcaatgccgaacagcacaacatatacgacaacctc
-# 		ctcagcaacttgttcacccattcccacaacatcgtcctccaactccttgcagagatggga
-# 		atcagcggcacgcttctggttgccgcaaccctgctgacgggcattgccgggctgcttaaa
-# 		cgccccctgacccccgcatcgcttttcctaatctgcacgcttgccgtcagtatgtgccac
-# 		agtatgctcgaatatcctttgtggtatgtctatttcctcatccctttcggactgatgctc
-# 		ttcctgtcccccgcagaggcttcagacggcatcgccttcaaaaaagccgccaatctcggc
-# 		atactgaccgcctccgccgccatattcgcaggattgctgcacttggactggacatacacc
-# 		cggctggttaacgccttttcccccgccactgacgacagtgccaaaaccctcaaccggaaa
-# 		atcaacgagttgcgctatatttccgcaaacagtccgatgctgtccttttatgccgacttc
-# 		tccctcgtaaacttcgccctgccggaataccccgaaacccagacttgggcggaagaagca
-# 		accctcaaatcactaaaataccgcccccactccgccacctaccgcatcgccctctacctg
-# 		atgcggcaaggcaaagttgcagaagcaaaacaatggatgcgggcgacacagtcctattac
-# 		ccctacctgatgccccgatacgccgacgaaatccgcaaactgcccgtatgggcgccgctg
-# 		ctacccgaactgctcaaagactgcaaagccttcgccgccgcgcccggtcatccggaagca
-# 		aaaccctgcaaatga"
+@testtemplate = "atgcccgctgaaacgaccgtatccggcgcgcaccccgccgccaaactgccgatttacatc
+		ctgccctgcttcctttggataggcatcgtcccctttaccttcgcgctcaaactgaaaccg
+		tcgcccgacttttaccacgatgccgccgccgcagccggcctgattgtcctgttgttcctc
+		acggcaggaaaaaaactgtttgatgtcaaaatccccgccatcagcttccttctgtttgca
+		atggcggcgttttggtatcttcaggcacgcctgatgaacctgatttaccccggtatgaac
+		gacatcgtctcttggattttcatcttgctcgccgtcagcgcgtgggcctgccggagcttg
+		gtcgcacacttcggacaagaacgcatcgtgaccctgtttgcctggtcgctgcttatcggc
+		tccctgcttcaatcctgcatcgtcgtcatccagtttgccggctgggaagacacccctctg
+		tttcaaaacatcatcgtttacagcgggcaaggcgtaatcggacacatcgggcagcgcaac
+		aacctcggacactacctcatgtggggcatactcgccgccgcctacctcaacggacaacga
+		aaaatccccgccgccctcggcgtaatctgcctgattatgcagaccgccgttttaggtttg
+		gtcaactcgcgcaccatcttgacctacatagccgccatcgccctcatccttcccttctgg
+		tatttccgttcggacaaatccaacaggcggacgatgctcggcatagccgcagccgtattc
+		cttaccgcgctgttccaattttccatgaacaccattctggaaacctttactggcatccgc
+		tacgaaactgccgtcgaacgcgtcgccaacggcggtttcacagacttgccgcgccaaatc
+		gaatggaataaagcccttgccgccttccagtccgccccgatattcgggcacggctggaac
+		agttttgcccaacaaaccttcctcatcaatgccgaacagcacaacatatacgacaacctc
+		ctcagcaacttgttcacccattcccacaacatcgtcctccaactccttgcagagatggga
+		atcagcggcacgcttctggttgccgcaaccctgctgacgggcattgccgggctgcttaaa
+		cgccccctgacccccgcatcgcttttcctaatctgcacgcttgccgtcagtatgtgccac
+		agtatgctcgaatatcctttgtggtatgtctatttcctcatccctttcggactgatgctc
+		ttcctgtcccccgcagaggcttcagacggcatcgccttcaaaaaagccgccaatctcggc
+		atactgaccgcctccgccgccatattcgcaggattgctgcacttggactggacatacacc
+		cggctggttaacgccttttcccccgccactgacgacagtgccaaaaccctcaaccggaaa
+		atcaacgagttgcgctatatttccgcaaacagtccgatgctgtccttttatgccgacttc
+		tccctcgtaaacttcgccctgccggaataccccgaaacccagacttgggcggaagaagca
+		accctcaaatcactaaaataccgcccccactccgccacctaccgcatcgccctctacctg
+		atgcggcaaggcaaagttgcagaagcaaaacaatggatgcgggcgacacagtcctattac
+		ccctacctgatgccccgatacgccgacgaaatccgcaaactgcccgtatgggcgccgctg
+		ctacccgaactgctcaaagactgcaaagccttcgccgccgcgcccggtcatccggaagca
+		aaaccctgcaaatga"
 
-# 		@snippetseq = "gtcgaacgcgtcgccaacggcggtttcacaga"
+		@snippetseq = "gtcgaacgcgtcgccaacggcggtttcacaga"
 
-# 		@snippet = Snippet.new(@snippetseq, @testtemplate)
+		@snippet = Snippet.new(@snippetseq, @testtemplate)
