@@ -54,8 +54,12 @@ class Snippet
 		return Snippet.new(@template[subStart, substring.length * 3], @template)
 	end
 
-	def to_s
+	def inspect
 		{:sequence => @snippet, :start => @start, :end => @end}
+	end
+
+	def to_s
+		@snippet
 	end
 
 	def start=(start)
