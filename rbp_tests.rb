@@ -98,4 +98,16 @@ class TestSnippet < Test::Unit::TestCase
 		assert_equal(d.start, 732)
 		assert_equal(d.end, 749)
 	end
+
+	def test_shift
+		template = 'tgatcgatcgattcgatcgatcgatcggctagct'
+		snip = 'tcgatcgatc'
+		snippet = Snippet.new(snip, template)
+		init_snip = snippet.clone
+		snippet.shift(3)
+		assert_equal(snippet.start - init_snip.start, 3)
+		assert_equal(snippet.end - init_snip.end, 3)
+		assert_equal(snippet.to_s, 'atcgatcgat')
+		assert_equal(snippet.length, init_snip.length)
+	end
 end

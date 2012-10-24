@@ -29,15 +29,22 @@ class Snippet
 
 	attr_reader :snippet, :template, :start, :end, :BRSnippet, :BRTemplate
 
-	def initialize(snippetSequence, templateSequence)
-		@snippet = snippetSequence
+	def initialize(snippetSequence, templateSequence, start=nil, finish=nil)
 		@template = templateSequence.strip.delete("\n\t")
+		if start and finish
+			@start = start
+			@end = finish
+			@snippet = @template[@start..@end]
+		else
+			@snippet = snippetSequence.strip.delete("\n\t")
+			raise SnippetError.new("0 or >1 snippet occurrence found") if @template.scan(@snippet).length != 1
+			@start = @template.index(@snippet)
+			raise SnippetError unless @start 
+			@end = @start + @snippet.length - 1
+		end
 		@BRSnippet = Bio::Sequence::NA.new(@snippet)
 		@BRTemplate = Bio::Sequence::NA.new(@template)
-		if @BRSnippet.illegal_bases.any? or @BRTemplate.illegal_bases.any? then raise DNAFormatError end
-		@start = @template.index(@snippet)
-		raise SnippetError unless @start 
-		@end = @start + @snippet.length - 1 
+		if @BRSnippet.illegal_bases.any? or @BRTemplate.illegal_bases.any? then raise DNAFormatError end		
 	end		
 
 	def method_missing(method_name, *args, &block)
@@ -45,21 +52,24 @@ class Snippet
 	end
 
 	def backTranslate(substring)
-		aaTrans = @BRTemplate.translate.strip.delete("\n\t")
-		raise SnippetError unless aaTrans
+		aaTrans = @BRTemplate.translate
 		subStart = aaTrans.index(substring)
-		raise SnippetError unless subStart
+		raise SnippetError.new("Snippet sequence not found in template") unless subStart
 		subStart = subStart * 3
 		subEnd = subStart + substring.length * 3
 		return Snippet.new(@template[subStart, substring.length * 3], @template)
 	end
 
 	def inspect
-		{:sequence => @snippet, :start => @start, :end => @end}
+		{:sequence => @snippet, :start => @start, :end => @end, :id => self.object_id}
 	end
 
 	def to_s
 		@snippet
+	end
+
+	def shift(numberOfBases)
+		initialize(snippetSequence=nil, templateSequence=@template, start=@start+=numberOfBases, finish=@end+=numberOfBases)
 	end
 
 	def start=(start)
@@ -68,6 +78,10 @@ class Snippet
 
 	def end=(endVal)
 		initialize(@template[@start..endVal], @template)
+	end
+
+	def length
+		@snippet.length
 	end
 end
 
@@ -106,4 +120,4 @@ end
 
 		@snippetseq = "gtcgaacgcgtcgccaacggcggtttcacaga"
 
-		@snippet = Snippet.new(@snippetseq, @testtemplate)
+# 		@snippet = Snippet.new(@snippetseq, @testtemplate)
