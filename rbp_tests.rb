@@ -110,4 +110,13 @@ class TestSnippet < Test::Unit::TestCase
 		assert_equal(snippet.to_s, 'atcgatcgat')
 		assert_equal(snippet.length, init_snip.length)
 	end
+
+	def test_adjustTM
+		assert_equal(@snippet.tm, 69.44989226541517)
+		d = @snippet.clone
+		f = d.adjustTM(45)
+		assert_not_equal(f.tm, 69.44989226541517)
+		assert_not_equal(@snippet.snippet, f.snippet)
+		assert(f.tm < 46)
+	end
 end

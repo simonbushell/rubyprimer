@@ -2,6 +2,7 @@ require 'Bio'
 
 class SnippetError < StandardError ; end
 class DNAFormatError < StandardError ; end
+class DNAIndexError < StandardError ; end
 
 
 class Bio::Sequence::NA
@@ -51,6 +52,24 @@ class Snippet
 		@BRSnippet.send(method_name, *args, &block)
 	end
 
+	def adjustTM(tm, bothEnds=false)
+		newSnippet = self.clone
+		if bothEnds
+			while newSnippet.tm < tm
+				newSnippet.start -= 1
+				newSnippet.end += 1 if newSnippet.tm > tm
+			end
+			while newSnippet.tm > tm
+				newSnippet.start += 1
+				newSnippet.end -= 1 if newSnippet.tm < tm
+			end
+			return newSnippet
+		end
+		newSnippet.end -=1 while newSnippet.tm > tm
+		newSnippet.end +=1 while newSnippet.tm < tm
+		return newSnippet
+	end
+
 	def backTranslate(substring)
 		aaTrans = @BRTemplate.translate
 		subStart = aaTrans.index(substring)
@@ -73,10 +92,12 @@ class Snippet
 	end
 
 	def start=(start)
+		raise DNAIndexError.new("can't have a negative start!") if start < 0
 		initialize(@template[start..@end], @template)
 	end
 
 	def end=(endVal)
+		raise DNAIndexError.new("end value > template length") if endVal >= @template.length
 		initialize(@template[@start..endVal], @template)
 	end
 
@@ -120,4 +141,4 @@ end
 
 		@snippetseq = "gtcgaacgcgtcgccaacggcggtttcacaga"
 
-# 		@snippet = Snippet.new(@snippetseq, @testtemplate)
+ 		@snippet = Snippet.new(@snippetseq, @testtemplate)
