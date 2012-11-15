@@ -1,4 +1,4 @@
-require "./rubyprimer"
+require "./classes"
 require "test/unit"
 require "Bio"
 
@@ -118,5 +118,16 @@ class TestSnippet < Test::Unit::TestCase
 		assert_not_equal(f.tm, 69.44989226541517)
 		assert_not_equal(@snippet.snippet, f.snippet)
 		assert(f.tm < 46)
+	end
+
+	def test_concatenation
+		snip1 = Snippet.new('gacatcgtctctt', @testtemplate)
+		snip2 = Snippet.new('ggattttcatctt', @testtemplate)
+		snip2b = Snippet.new('gccttcaaaaaa', @testtemplate)
+		snip3 = snip1 + snip2
+		assert_equal(snip1.snippet + snip2.snippet, snip3.snippet)
+		assert_raise(SnippetError) {snip4 = snip1 + snip2b}
+		assert_equal(snip3.start, snip1.start)
+		assert_equal(snip3.end, snip2.end)
 	end
 end

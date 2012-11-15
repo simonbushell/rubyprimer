@@ -104,41 +104,11 @@ class Snippet
 	def length
 		@snippet.length
 	end
+
+	def +(otherSnippet)
+		snips = [self, otherSnippet].sort_by {|i| i.start}
+		raise SnippetError.new("Snippets are not consecutive") unless snips[1].start - snips[0].end == 1
+		return Snippet.new(snippetSequence = nil, templateSequence = @template, snippetSequence = snips[0].start, finish = snips[1].end)
+	end
+
 end
-
-
-@testtemplate = "atgcccgctgaaacgaccgtatccggcgcgcaccccgccgccaaactgccgatttacatc
-		ctgccctgcttcctttggataggcatcgtcccctttaccttcgcgctcaaactgaaaccg
-		tcgcccgacttttaccacgatgccgccgccgcagccggcctgattgtcctgttgttcctc
-		acggcaggaaaaaaactgtttgatgtcaaaatccccgccatcagcttccttctgtttgca
-		atggcggcgttttggtatcttcaggcacgcctgatgaacctgatttaccccggtatgaac
-		gacatcgtctcttggattttcatcttgctcgccgtcagcgcgtgggcctgccggagcttg
-		gtcgcacacttcggacaagaacgcatcgtgaccctgtttgcctggtcgctgcttatcggc
-		tccctgcttcaatcctgcatcgtcgtcatccagtttgccggctgggaagacacccctctg
-		tttcaaaacatcatcgtttacagcgggcaaggcgtaatcggacacatcgggcagcgcaac
-		aacctcggacactacctcatgtggggcatactcgccgccgcctacctcaacggacaacga
-		aaaatccccgccgccctcggcgtaatctgcctgattatgcagaccgccgttttaggtttg
-		gtcaactcgcgcaccatcttgacctacatagccgccatcgccctcatccttcccttctgg
-		tatttccgttcggacaaatccaacaggcggacgatgctcggcatagccgcagccgtattc
-		cttaccgcgctgttccaattttccatgaacaccattctggaaacctttactggcatccgc
-		tacgaaactgccgtcgaacgcgtcgccaacggcggtttcacagacttgccgcgccaaatc
-		gaatggaataaagcccttgccgccttccagtccgccccgatattcgggcacggctggaac
-		agttttgcccaacaaaccttcctcatcaatgccgaacagcacaacatatacgacaacctc
-		ctcagcaacttgttcacccattcccacaacatcgtcctccaactccttgcagagatggga
-		atcagcggcacgcttctggttgccgcaaccctgctgacgggcattgccgggctgcttaaa
-		cgccccctgacccccgcatcgcttttcctaatctgcacgcttgccgtcagtatgtgccac
-		agtatgctcgaatatcctttgtggtatgtctatttcctcatccctttcggactgatgctc
-		ttcctgtcccccgcagaggcttcagacggcatcgccttcaaaaaagccgccaatctcggc
-		atactgaccgcctccgccgccatattcgcaggattgctgcacttggactggacatacacc
-		cggctggttaacgccttttcccccgccactgacgacagtgccaaaaccctcaaccggaaa
-		atcaacgagttgcgctatatttccgcaaacagtccgatgctgtccttttatgccgacttc
-		tccctcgtaaacttcgccctgccggaataccccgaaacccagacttgggcggaagaagca
-		accctcaaatcactaaaataccgcccccactccgccacctaccgcatcgccctctacctg
-		atgcggcaaggcaaagttgcagaagcaaaacaatggatgcgggcgacacagtcctattac
-		ccctacctgatgccccgatacgccgacgaaatccgcaaactgcccgtatgggcgccgctg
-		ctacccgaactgctcaaagactgcaaagccttcgccgccgcgcccggtcatccggaagca
-		aaaccctgcaaatga"
-
-		@snippetseq = "gtcgaacgcgtcgccaacggcggtttcacaga"
-
- 		@snippet = Snippet.new(@snippetseq, @testtemplate)
