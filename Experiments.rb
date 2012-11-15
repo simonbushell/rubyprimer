@@ -1,28 +1,24 @@
 require "Snippet"
 
 class Experiment
-
-	def initialize
+	def initialize(experimentString, template)
 	end
 end
 
 
 class DeletionExperiment < Experiment
-	
-	def initialize
-	end
+
+	@@ExperimentRegex = /\A[acdefghiklmnpqrstvwy]+-[acdefghiklmnpqrstvwy]+\z/i
 end
 
 
 class InsertionExperiment < Experiment
 	
-	def initialize
-	end
+	@@ExperimentRegex = /\A[acdefghiklmnpqrstvwy]+[ACDEFGHIKLMNPRSTVWY]+[acdefghiklmnpqrstvwy]+\z/ 
 end
 
 
 class SubstituionExperiment < Experiment
 	
-	def initialize
-	end
+	@@ExperimentRegex = /\A[acdefghiklmnpqrstvwy]+\z/ 
 end

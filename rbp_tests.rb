@@ -1,4 +1,4 @@
-require "./classes"
+require "./Snippet"
 require "test/unit"
 require "Bio"
 
