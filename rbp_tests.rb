@@ -170,5 +170,10 @@ class Test_DeletionExperiments < Test::Unit::TestCase
 		assert_equal(@ExperimentObject.mutatedTemplate, @expectedMutTemplate)
 	end
 
+	def test_PPtm
+		assert @ExperimentObject.PPsnippet
+		assert_operator @ExperimentObject.PPsnippet.tm, :<, 48.0
+	end
+
 end
 
