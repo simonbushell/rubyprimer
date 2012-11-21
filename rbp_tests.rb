@@ -140,7 +140,12 @@ class Test_DeletionExperiments < Test::Unit::TestCase
 		@template = 'atgcccgctgaaacgaccgtatccggcgcgcaccccgccgccaaactgccgatttacatc'
 		@aaSeq = 'MPAETTVSGAHPAAKLPIYI'
 		@expString = 'MPAE-PIYI'
-		@experectedTemplate = 'atgcccgctgaaccgatttacatc'
+		@expectedMutTemplate = 'atgcccgctgaaccgatttacatc'
+		@ExperimentObject = DeletionExperiment.new(@expString, @template)
+	end
+
+	def test_createMutatedTemplate
+		assert_equal(@ExperimentObject.mutatedTemplate, @expectedMutTemplate)
 	end
 
 end

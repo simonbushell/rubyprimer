@@ -98,6 +98,11 @@ class Snippet
 		initialize(snippetSequence=nil, templateSequence=@template, start=@start+=numberOfBases, finish=@end+=numberOfBases)
 	end
 
+	def extend5(numberOfBases)
+		self.start += (numberOfBases * -1)
+	end
+
+
 	def start=(start)
 		raise DNAIndexError.new("can't have a negative start!") if start < 0
 		initialize(@template[start..@end], @template)
