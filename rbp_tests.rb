@@ -131,6 +131,28 @@ class TestSnippet < Test::Unit::TestCase
 		assert_equal(snip3.start, snip1.start)
 		assert_equal(snip3.end, snip2.end)
 	end
+
+	def test_extend5
+		test = @snippet.clone
+		test.extend5(3)
+		assert_equal(test.to_s, 'gcc'+@snippetseq)
+		assert_equal(test.start, @snippet.start - 3)
+		test = @snippet.clone
+		test.extend5(-3)
+		assert_equal(test.to_s, @snippetseq[3..-1])
+		assert_equal(test.start, @snippet.start + 3)
+	end
+
+	def test_extend3
+		test = @snippet.clone
+		test.extend3(3)
+		assert_equal(test.to_s, @snippetseq + 'ctt')
+		assert_equal(test.end, @snippet.end + 3)
+		test = @snippet.clone
+		test.extend3(-3)
+		assert_equal(test.to_s, @snippetseq[0..-4])
+		assert_equal(test.end, @snippet.end - 3)
+	end
 end
 
 

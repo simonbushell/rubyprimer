@@ -102,6 +102,9 @@ class Snippet
 		self.start += (numberOfBases * -1)
 	end
 
+	def extend3(numberOfBases)
+		self.end += numberOfBases
+	end
 
 	def start=(start)
 		raise DNAIndexError.new("can't have a negative start!") if start < 0
