@@ -52,9 +52,9 @@ class Snippet
 		@BRSnippet.send(method_name, *args, &block)
 	end
 
-	def adjustTM(tm, bothEnds=false)
+	def adjustTM(tm, ends=:both)
 		newSnippet = self.clone
-		if bothEnds
+		if ends == :both
 			while newSnippet.tm < tm
 				newSnippet.start -= 1
 				newSnippet.end += 1 if newSnippet.tm > tm
@@ -65,6 +65,13 @@ class Snippet
 			end
 			return newSnippet
 		end
+
+		if ends == :left
+			newSnippet.start +=1 while newSnippet.tm > tm
+			newSnippet.start -=1 while newSnippet.tm < tm
+			return newSnippet
+		end
+
 		newSnippet.end -=1 while newSnippet.tm > tm
 		newSnippet.end +=1 while newSnippet.tm < tm
 		return newSnippet
@@ -72,7 +79,7 @@ class Snippet
 
 	def backTranslate(substring)
 		aaTrans = @BRTemplate.translate
-		subStart = aaTrans.index(substring)
+		subStart = aaTrans.index(substring.upcase)
 		raise SnippetError.new("Snippet sequence not found in template") unless subStart
 		subStart = subStart * 3
 		subEnd = subStart + substring.length * 3

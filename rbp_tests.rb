@@ -1,4 +1,5 @@
 require "./Snippet"
+require "./Experiments"
 require "test/unit"
 require "Bio"
 
@@ -131,3 +132,16 @@ class TestSnippet < Test::Unit::TestCase
 		assert_equal(snip3.end, snip2.end)
 	end
 end
+
+
+class Test_DeletionExperiments < Test::Unit::TestCase 
+	
+	def setup
+		@template = 'atgcccgctgaaacgaccgtatccggcgcgcaccccgccgccaaactgccgatttacatc'
+		@aaSeq = 'MPAETTVSGAHPAAKLPIYI'
+		@expString = 'MPAE-PIYI'
+		@experectedTemplate = 'atgcccgctgaaccgatttacatc'
+	end
+
+end
+
