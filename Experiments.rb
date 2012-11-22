@@ -2,7 +2,7 @@ require "./Snippet"
 
 class Experiment
 
-	attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm
+	attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer
 
 	@@AAcodes = 'acdefghiklmnpqrstvwy'
 	@@DefaultPPtm = 48.0
@@ -14,6 +14,7 @@ class Experiment
 		if @PPsnippet
 			@PPsnippet = @PPsnippet.adjustTM(@@DefaultPPtm)
 		end
+		self.getForwardPrimer
 	end
 end
 
@@ -33,6 +34,9 @@ class DeletionExperiment < Experiment
 	end
 
 	def getForwardPrimer
+		@forwardPrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=(@PPsnippet.end + 1), finish=(@PPsnippet.end + 3))
+		@forwardPrimerTemplate = @forwardPrimerTemplate.adjustTM(@@DefaultPPtm + 5.0, ends=:right)
+		@forwardPrimer = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=@PPsnippet.start, finish=@forwardPrimerTemplate.finish)
 	end
 	
 end
