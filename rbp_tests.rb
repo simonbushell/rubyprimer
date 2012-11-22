@@ -237,8 +237,29 @@ class Test_DeletionExperiments < Test::Unit::TestCase
 
 	def test_PPtm
 		assert @ExperimentObject.PPsnippet
-		assert_operator @ExperimentObject.PPsnippet.tm, :<, 48.0
+		assert_operator @ExperimentObject.PPsnippet.tm, :<, 50.0
 	end
+
+	def test_makeForwardPrimer
+		assert @ExperimentObject.forwardPrimer
+		# p @ExperimentObject.PPsnippet
+		assert (@ExperimentObject.forwardPrimerTemplate.tm - @ExperimentObject.PPsnippet.tm) > 5.0
+		# p @ExperimentObject.forwardPrimer
+		# p @ExperimentObject.forwardPrimerTemplate.to_s
+		# p @ExperimentObject.forwardPrimerTemplate.tm
+		# p @ExperimentObject.PPsnippet.tm
+		assert(@expectedMutTemplate.include?(@ExperimentObject.forwardPrimerTemplate.snippet))
+	end
+
+	def test_makeReversePrimer
+		assert @ExperimentObject.reversePrimer
+		# p @ExperimentObject.forwardPrimer
+		# p @ExperimentObject.reversePrimer
+		# p @ExperimentObject.PPsnippet.snippet
+		rpObject = Bio::Sequence::NA.new(@ExperimentObject.reversePrimer)
+		assert(@expectedMutTemplate.include?(rpObject.reverse_complement))
+	end
+
 
 end
 

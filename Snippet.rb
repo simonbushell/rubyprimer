@@ -57,11 +57,11 @@ class Snippet
 		if ends == :both
 			while newSnippet.tm < tm
 				newSnippet.start -= 1
-				newSnippet.end += 1 if newSnippet.tm > tm
+				newSnippet.end += 1 if newSnippet.tm < tm
 			end
 			while newSnippet.tm > tm
 				newSnippet.start += 1
-				newSnippet.end -= 1 if newSnippet.tm < tm
+				newSnippet.end -= 1 if newSnippet.tm > tm
 			end
 			return newSnippet
 		end
@@ -113,7 +113,7 @@ class Snippet
 
 	def end=(endVal)
 		raise DNAIndexError.new("end value > template length") if endVal >= @template.length
-		initialize(@template[@start..endVal], @template)
+		initialize(snippetSequence=nil, templateSequence=@template, start=self.start, finish=endVal)
 	end
 
 	def length

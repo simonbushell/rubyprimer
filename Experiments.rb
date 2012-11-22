@@ -2,19 +2,17 @@ require "./Snippet"
 
 class Experiment
 
-	attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer
+	attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer, :forwardPrimerTemplate, :reversePrimer
 
 	@@AAcodes = 'acdefghiklmnpqrstvwy'
-	@@DefaultPPtm = 48.0
+	@@DefaultPPtm = 50.0
 
 	def initialize(experimentString, template)
 		@experimentString = experimentString
 		@template = Snippet.new(template, template)
 		@mutatedTemplate = self.getmutatedTemplate
-		if @PPsnippet
-			@PPsnippet = @PPsnippet.adjustTM(@@DefaultPPtm)
-		end
-		#self.getForwardPrimer
+		self.getForwardPrimer
+		@reversePrimer = self.getReversePrimer
 	end
 end
 
@@ -30,15 +28,22 @@ class DeletionExperiment < Experiment
 		threePrimeSnippet = @template.backTranslate(templatebits["threePrime"])
 		mutatedTemplate = @template.to_s[0..fivePrimeSnippet.end] + @template.to_s[threePrimeSnippet.start..-1]
 		@PPsnippet = Snippet.new(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, mutatedTemplate)
+		@PPsnippet = @PPsnippet.adjustTM(@@DefaultPPtm, ends=:both)
 		return mutatedTemplate
 	end
 
 	def getForwardPrimer
 		@forwardPrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=(@PPsnippet.end + 1), finish=(@PPsnippet.end + 3))
-		@forwardPrimerTemplate = @forwardPrimerTemplate.adjustTM(@@DefaultPPtm + 5.0, ends=:right)
-		@forwardPrimer = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=@PPsnippet.start, finish=@forwardPrimerTemplate.finish)
+		@forwardPrimerTemplate = @forwardPrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:right)
+		@forwardPrimer = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=@PPsnippet.start, finish=@forwardPrimerTemplate.end)
 	end
 	
+	def getReversePrimer
+		@reversePrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start = (@PPsnippet.start - 4), finish=(@PPsnippet.start - 1))
+		@reversePrimerTemplate = @reversePrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:left)
+		reversePrimer = Bio::Sequence::NA.new(@reversePrimerTemplate.snippet + @PPsnippet.snippet)
+		return reversePrimer.reverse_complement
+	end
 end
 
 
