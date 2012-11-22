@@ -232,7 +232,7 @@ class Test_DeletionExperiments < Test::Unit::TestCase
 	end
 
 	def test_createMutatedTemplate
-		assert_equal(@ExperimentObject.mutatedTemplate, @expectedMutTemplate)
+		assert_equal(@ExperimentObject.mutatedTemplate, @expectedMutTemplate.strip.delete("\n\t"))
 	end
 
 	def test_PPtm

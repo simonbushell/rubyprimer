@@ -14,7 +14,7 @@ class Experiment
 		if @PPsnippet
 			@PPsnippet = @PPsnippet.adjustTM(@@DefaultPPtm)
 		end
-		self.getForwardPrimer
+		#self.getForwardPrimer
 	end
 end
 
@@ -56,9 +56,3 @@ class SubstituionExperiment < Experiment
 		templateRegex = /#{substrings["presub"]}[#{@@AAcodes}]#{substrings["postsub"]}/
 	end
 end
-
-@template = 'atgcccgctgaaacgaccgtatccggcgcgcaccccgccgccaaactgccgatttacatc'
-@aaSeq = 'MPAETTVSGAHPAAKLPIYI'
-@expString = 'MPAE-PIYI'
-@expectedMutTemplate = 'atgcccgctgaaccgatttacatc'
-@ExperimentObject = DeletionExperiment.new(@expString, @template)
