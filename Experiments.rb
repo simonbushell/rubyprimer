@@ -1,5 +1,7 @@
 require "./Snippet"
 
+class ExperimentError < StandardError ; end
+
 class Experiment
 
 	attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer, :forwardPrimerTemplate, :reversePrimer, :reversePrimerTemplate
@@ -32,6 +34,7 @@ class DeletionExperiment < Experiment
 		templatebits = @experimentString.match /(?<fivePrime>[a-z]+)-(?<threePrime>[a-z]+)/i
 		fivePrimeSnippet = @template.backTranslate(templatebits["fivePrime"])
 		threePrimeSnippet = @template.backTranslate(templatebits["threePrime"])
+		raise ExperimentError.new("C-terminal Sequence comes before N-terminal Sequence") if fivePrimeSnippet.start > threePrimeSnippet.start
 		mutatedTemplate = @template.to_s[0..fivePrimeSnippet.end] + @template.to_s[threePrimeSnippet.start..-1]
 		@PPsnippet = Snippet.new(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, mutatedTemplate)
 		@PPsnippet = @PPsnippet.adjustTM(@@defaultPPtm, ends=:both)
