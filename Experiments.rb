@@ -2,10 +2,10 @@ require "./Snippet"
 
 class Experiment
 
-	attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer, :forwardPrimerTemplate, :reversePrimer
+	attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer, :forwardPrimerTemplate, :reversePrimer, :reversePrimerTemplate
 
 	@@AAcodes = 'acdefghiklmnpqrstvwy'
-	@@DefaultPPtm = 50.0
+	@@defaultPPtm = 50.0
 
 	def initialize(experimentString, template)
 		@experimentString = experimentString
@@ -13,6 +13,12 @@ class Experiment
 		@mutatedTemplate = self.getmutatedTemplate
 		self.getForwardPrimer
 		@reversePrimer = self.getReversePrimer
+		while @forwardPrimer.length <= 30
+			@@defaultPPtm += 1
+			@mutatedTemplate = self.getmutatedTemplate
+			self.getForwardPrimer
+			@reversePrimer = self.getReversePrimer
+		end
 	end
 end
 
@@ -28,7 +34,7 @@ class DeletionExperiment < Experiment
 		threePrimeSnippet = @template.backTranslate(templatebits["threePrime"])
 		mutatedTemplate = @template.to_s[0..fivePrimeSnippet.end] + @template.to_s[threePrimeSnippet.start..-1]
 		@PPsnippet = Snippet.new(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, mutatedTemplate)
-		@PPsnippet = @PPsnippet.adjustTM(@@DefaultPPtm, ends=:both)
+		@PPsnippet = @PPsnippet.adjustTM(@@defaultPPtm, ends=:both)
 		return mutatedTemplate
 	end
 

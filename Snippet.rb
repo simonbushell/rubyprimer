@@ -108,7 +108,7 @@ class Snippet
 
 	def start=(start)
 		raise DNAIndexError.new("can't have a negative start!") if start < 0
-		initialize(@template[start..@end], @template)
+		initialize(snippetSequence=nil, templateSequence=@template, start=start, finish=self.end)
 	end
 
 	def end=(endVal)
