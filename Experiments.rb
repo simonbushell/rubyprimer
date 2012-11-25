@@ -4,7 +4,8 @@ class ExperimentError < StandardError ; end
 
 class Experiment
 
-	attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer, :forwardPrimerTemplate, :reversePrimer, :reversePrimerTemplate
+	attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer, 
+	:forwardPrimerTemplate, :reversePrimer, :reversePrimerTemplate
 
 	@@AAcodes = 'acdefghiklmnpqrstvwy'
 	@@defaultPPtm = 50.0
@@ -12,10 +13,8 @@ class Experiment
 	def initialize(experimentString, template)
 		@experimentString = experimentString
 		@template = Snippet.new(template, template)
-		@mutatedTemplate = self.getmutatedTemplate
-		self.getForwardPrimer
-		@reversePrimer = self.getReversePrimer
-		while @forwardPrimer.length <= 30
+		@@defaultPPtm -= 1
+		while not @forwardPrimer or @forwardPrimer.length <= 30
 			@@defaultPPtm += 1
 			@mutatedTemplate = self.getmutatedTemplate
 			self.getForwardPrimer
