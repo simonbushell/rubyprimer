@@ -13,14 +13,22 @@ class Experiment
 	def initialize(experimentString, template)
 		@experimentString = experimentString
 		@template = Snippet.new(template, template)
-		@@defaultPPtm -= 1
+		@ppTM = @@defaultPPtm - 1
 		while not @forwardPrimer or @forwardPrimer.length <= 30
-			@@defaultPPtm += 1
-			@mutatedTemplate = self.getmutatedTemplate
+			@ppTM += 1
+			self.setMutatedTemplate
 			self.getForwardPrimer
 			@reversePrimer = self.getReversePrimer
 		end
 	end
+
+	def setPPRegion(sequence, tm=nil)
+		@PPsnippet = Snippet.new(sequence, @mutatedTemplate)
+		if tm
+			@PPsnippet = @PPsnippet.adjustTM(@ppTM, ends=:both)
+		end
+	end
+
 end
 
 
@@ -29,18 +37,24 @@ class DeletionExperiment < Experiment
 
 	@@ExperimentRegex = /\A[#{@@AAcodes}]+-[#{@@AAcodes}]+\z/i
 
-	def getmutatedTemplate
+	def setMutatedTemplate
+		# Returns the mutated template as a string, and calculates the required
+		# primer-primer overlap region as a snippet of the mutated template
+
 		templatebits = @experimentString.match /(?<fivePrime>[a-z]+)-(?<threePrime>[a-z]+)/i
 		fivePrimeSnippet = @template.backTranslate(templatebits["fivePrime"])
 		threePrimeSnippet = @template.backTranslate(templatebits["threePrime"])
 		raise ExperimentError.new("C-terminal Sequence comes before N-terminal Sequence") if fivePrimeSnippet.start > threePrimeSnippet.start
-		mutatedTemplate = @template.to_s[0..fivePrimeSnippet.end] + @template.to_s[threePrimeSnippet.start..-1]
-		@PPsnippet = Snippet.new(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, mutatedTemplate)
-		@PPsnippet = @PPsnippet.adjustTM(@@defaultPPtm, ends=:both)
-		return mutatedTemplate
+		@mutatedTemplate = @template.to_s[0..fivePrimeSnippet.end] + @template.to_s[threePrimeSnippet.start..-1]
+		self.setPPRegion(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, tm=@ppTM)
+		# @PPsnippet = Snippet.new(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, mutatedTemplate)
+		# @PPsnippet = @PPsnippet.adjustTM(@ppTM, ends=:both)
+		#return mutatedTemplate
 	end
 
 	def getForwardPrimer
+		# Calculates the required foraward primer for the experiment and returns
+		# it as a Snippet
 		@forwardPrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=(@PPsnippet.end + 1), finish=(@PPsnippet.end + 3))
 		@forwardPrimerTemplate = @forwardPrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:right)
 		@forwardPrimer = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=@PPsnippet.start, finish=@forwardPrimerTemplate.end)
