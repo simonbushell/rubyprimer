@@ -40,6 +40,16 @@ class Experiment
 		possibleCodons.each {|x| codonScores[x] = m.match(x)}
 		return codonScores.sort_by{|codon, score| score}[0][0]
 	end
+
+	def printData
+		puts "Forward Primer: #{@forwardPrimer.to_s} (#{@forwardPrimer.length} bp)"
+		puts "Reverse Primer: #{@reversePrimer.to_s} (#{@reversePrimer.length} bp)"
+		puts "\nPP tm: #{@PPsnippet.tm.round(1)}"
+		puts "Forward PT tm: #{@forwardPrimerTemplate.tm.round(1)}"
+		puts "Reverse PT tm: #{@reversePrimerTemplate.tm.round(1)}"
+		puts "\nPP Sequence: #{@PPsnippet.to_s}"
+		puts "rev PPSequence: #{@PPsnippet.reverse_complement}"
+	end
 end
 
 

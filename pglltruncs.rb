@@ -1,0 +1,53 @@
+require "./Snippet"
+require "./Experiments"
+require "Bio"
+
+
+puts "** vcPgll truncation primers **"
+
+nMtemplate = "GGGACAAGTTTGTACAAAAAAGCAGGCTTCGAAGGAGATATACATatgttttctagtgaaatgggtgcctttgcagcagggttaagtatattagctgtattacta
+aaccaaaatataaaaactccacgcgcacaattattaatattgccatttatcctaattcct
+ctagtacagtggagtttcggattaattttagattttagtacagccttgttgagtactctt
+tatttgctaggcttttggtttatgatactaataggttataacttatctttagatgagaaa
+aaaagagaacaacttttctcgggtttttgtgttctggtattgacggtagctgttgggaca
+agctttatagcaatttatcaatggttaaatttagaatctaattttatttatatgcttaat
+ttaattggtaaccgtccttacggcaactttggtcaacctaacaatatggcaacctttctg
+attatggggttattaggttgtctatttttatatgaaaagaataaagcaacagtttggtta
+cttttcccttcagcactcattatcttgtttacaatcgctttaagccaatcaagaacttct
+tgggtcgtttttccatttttacttatctattggatagttaaactatttggaaaacaaaaa
+agatttggttttattcaagggttcttgtggtgtgctggtttttttgtaatagctgaagtg
+attctgccatttgctactagtttaattgaagcatggtcaagcactgatgtaacccaagca
+agtagtttagttgaaagagcaagctctggatatttacgttttaatatctggacccaaatg
+ctacttgctgtacagcagcatccttggttagggtatggttggaaccaaaccagtgtggcg
+caaatgtcagcttacgctctttttccaacaactgagtggacaaccagtgcccataatatt
+ttattagatctcatcatctggaacggtattccaataggtatagtcattattgcttacttt
+gcatgttggttcctttggctaaaccagcaggctaaagaaactatctcaattattgcaatt
+atgatggtgtgtaccgtactcattcatgccatgttagagtttcctcaacgctacgcttat
+ttcttacttacttgtggtttcttattaggcataattcaggcacagacacctgtactcaaa
+ggtattgtactcaacaagcaggttcttcgattaatttggggaataagtgtaatacttctg
+gtagcaatttggcgtgactataatgtctatgtcacaaatagtaatttgctgtttaagaat
+aaacagccaaatgctgagattttaggaagtaatcagatttttattttaacgcagtttgag
+cagcgtctaaaatggattgagatgaagcctgaaactactttatctgatgctgatttagca
+gtatggggtaattttgtgaagaataaagcgacaccttataacttgcgtaaatatgcccag
+ctacttgcctataatggaaaagtagaacaggccgagcagcaaatatttattttgcagcat
+ctttatcgacagcaaataactttggcagagttgttaaaaaataaaataaaaaaaatcccc
+ttaagtacaaggggatttttttttatgaggaattacattcggctttggatagatggccatcaccatcaccatcactaggacccagctttcttgtacaaagtggtcccc"
+
+
+nMtruncations_to_make = ["LLFKN-DGHH",
+						"AEILG-DGHH",
+						"KWIEM-DGHH",
+						"FVKNK-DGHH",
+						"LAYNG-DGHH",
+						"QHLYR-DGHH",
+						"IKKIP-DGHH",
+						"GDIH-QQAKE"]
+
+nMtruncations_to_make.each do |x|
+	puts x
+	obj = DeletionExperiment.new(x, nMtemplate)
+	obj.printData
+	puts "======"
+end
+
+
