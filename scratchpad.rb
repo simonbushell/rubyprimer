@@ -1,13 +1,43 @@
 require "./Snippet"
+require "./Experiments"
+require "test/unit"
 require "Bio"
 require "amatch"
 
-def getBestCodon(codon, aminoacid)
-	include Amatch
-	codonTable = Bio::CodonTable[1]
-	possibleCodons = codonTable.revtrans(aminoacid)
-	codonScores = Hash.new
-	m = Sellers.new(codon)
-	possibleCodons.each {|x| codonScores[x] = m.match(x)}
-	return codonScores.sort_by{|codon, score| score}[0][0]
-end
+
+@template = "atgcccgctgaaacgaccgtatccggcgcgcaccccgccgccaaactgccgatttacatc
+		ctgccctgcttcctttggataggcatcgtcccctttaccttcgcgctcaaactgaaaccg
+		tcgcccgacttttaccacgatgccgccgccgcagccggcctgattgtcctgttgttcctc
+		acggcaggaaaaaaactgtttgatgtcaaaatccccgccatcagcttccttctgtttgca
+		atggcggcgttttggtatcttcaggcacgcctgatgaacctgatttaccccggtatgaac
+		gacatcgtctcttggattttcatcttgctcgccgtcagcgcgtgggcctgccggagcttg
+		gtcgcacacttcggacaagaacgcatcgtgaccctgtttgcctggtcgctgcttatcggc
+		tccctgcttcaatcctgcatcgtcgtcatccagtttgccggctgggaagacacccctctg
+		tttcaaaacatcatcgtttacagcgggcaaggcgtaatcggacacatcgggcagcgcaac
+		aacctcggacactacctcatgtggggcatactcgccgccgcctacctcaacggacaacga
+		aaaatccccgccgccctcggcgtaatctgcctgattatgcagaccgccgttttaggtttg
+		gtcaactcgcgcaccatcttgacctacatagccgccatcgccctcatccttcccttctgg
+		tatttccgttcggacaaatccaacaggcggacgatgctcggcatagccgcagccgtattc
+		cttaccgcgctgttccaattttccatgaacaccattctggaaacctttactggcatccgc
+		tacgaaactgccgtcgaacgcgtcgccaacggcggtttcacagacttgccgcgccaaatc
+		gaatggaataaagcccttgccgccttccagtccgccccgatattcgggcacggctggaac
+		agttttgcccaacaaaccttcctcatcaatgccgaacagcacaacatatacgacaacctc
+		ctcagcaacttgttcacccattcccacaacatcgtcctccaactccttgcagagatggga
+		atcagcggcacgcttctggttgccgcaaccctgctgacgggcattgccgggctgcttaaa
+		cgccccctgacccccgcatcgcttttcctaatctgcacgcttgccgtcagtatgtgccac
+		agtatgctcgaatatcctttgtggtatgtctatttcctcatccctttcggactgatgctc
+		ttcctgtcccccgcagaggcttcagacggcatcgccttcaaaaaagccgccaatctcggc
+		atactgaccgcctccgccgccatattcgcaggattgctgcacttggactggacatacacc
+		cggctggttaacgccttttcccccgccactgacgacagtgccaaaaccctcaaccggaaa
+		atcaacgagttgcgctatatttccgcaaacagtccgatgctgtccttttatgccgacttc
+		tccctcgtaaacttcgccctgccggaataccccgaaacccagacttgggcggaagaagca
+		accctcaaatcactaaaataccgcccccactccgccacctaccgcatcgccctctacctg
+		atgcggcaaggcaaagttgcagaagcaaaacaatggatgcgggcgacacagtcctattac
+		ccctacctgatgccccgatacgccgacgaaatccgcaaactgcccgtatgggcgccgctg
+		ctacccgaactgctcaaagactgcaaagccttcgccgccgcgcccggtcatccggaagca
+		aaaccctgcaaatga".strip.delete("\n\t")
+
+@expString = 'LGVI*A*LIMQ'
+
+@exp = SubstitutionExperiment.new(@expString, @template)
+

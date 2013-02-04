@@ -7,7 +7,7 @@ class ExperimentError < StandardError ; end
 class Experiment
 
 	attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer, 
-	:forwardPrimerTemplate, :reversePrimer, :reversePrimerTemplate
+	:forwardPrimerTemplate, :reversePrimer, :reversePrimerTemplate, :template
 
 	@@AAcodes = 'acdefghiklmnpqrstvwy'
 	@@defaultPPtm = 50.0
@@ -27,16 +27,16 @@ class Experiment
 	def setPPRegion(sequence, tm=nil)
 		@PPsnippet = Snippet.new(sequence, @mutatedTemplate)
 		if tm
-			@PPsnippet = @PPsnippet.adjustTM(@ppTM, ends=:both)
+			@PPsnippet = @PPsnippet.adjustTM(@ppTM, ends=:both)#
 		end
 	end
 
 	def getBestCodon(codon, aminoacid)
-		include Amatch
+		# include Amatch
 		codonTable = Bio::CodonTable[1]
 		possibleCodons = codonTable.revtrans(aminoacid)
 		codonScores = Hash.new
-		m = Sellers.new(codon)
+		m = Amatch::Sellers.new(codon)
 		possibleCodons.each {|x| codonScores[x] = m.match(x)}
 		return codonScores.sort_by{|codon, score| score}[0][0]
 	end
@@ -95,12 +95,27 @@ class InsertionExperiment < Experiment
 	@@ExperimentRegex = /\A[#{@@AAcodes}]+[ACDEFGHIKLMNPRSTVWY]+[#{@@AAcodes}]+\z/ 
 end
 
-class SubstituionExperiment < Experiment
+class SubstitutionExperiment < Experiment
 	
 	@@ExperimentRegex = /\A(?<presub>[#{@@AAcodes}]+)[*](?<sub>[#{@@AAcodes}])[*](?<postsub>[#{@@AAcodes}])+\z/i
 
-	def mutateTemplate
-		substrings = @@ExperimentRegex.match(experimentString)
-		templateRegex = /#{substrings["presub"]}[#{@@AAcodes}]#{substrings["postsub"]}/
+	def initialize(experimentString, template)
+		@experimentString = experimentString
+		@template = Snippet.new(template, template)
+		@ppTM = @@defaultPPtm - 1
+
+	end
+
+	def setMutatedTemplate
+		preMutSnippet = @template.backTranslate(@experimentString.split('*')[0])
+		mutationAA = @experimentString.split('*')[1]
+		postMutSnippet = @template.backTranslate(@experimentString.split('*')[2])
+
+		codonToChange = @template.to_s[preMutSnippet.end + 1 .. postMutSnippet.start - 1]
+		raise ExperimentError.new("This requires more than a single codon change") unless codonToChange.length == 3
+
+		@mutatedTemplate = @template.to_s[0..preMutSnippet.end] + self.getBestCodon(codonToChange, mutationAA) + @template.to_s[postMutSnippet.start .. -1]
+		mutatedRegion = preMutSnippet.to_s + self.getBestCodon(codonToChange, mutationAA) + postMutSnippet.to_s
+		self.setPPRegion(mutatedRegion, tm=@ppTM)
 	end
 end
