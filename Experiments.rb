@@ -50,6 +50,21 @@ class Experiment
 		puts "\nPP Sequence: #{@PPsnippet.to_s}"
 		puts "rev PPSequence: #{@PPsnippet.reverse_complement}"
 	end
+
+		def getForwardPrimer
+		# Calculates the required foraward primer for the experiment and returns
+		# it as a Snippet
+		@forwardPrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=(@PPsnippet.end + 1), finish=(@PPsnippet.end + 3))
+		@forwardPrimerTemplate = @forwardPrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:right)
+		@forwardPrimer = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=@PPsnippet.start, finish=@forwardPrimerTemplate.end)
+	end
+	
+	def getReversePrimer
+		@reversePrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start = (@PPsnippet.start - 4), finish=(@PPsnippet.start - 1))
+		@reversePrimerTemplate = @reversePrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:left)
+		reversePrimer = Bio::Sequence::NA.new(@reversePrimerTemplate.snippet + @PPsnippet.snippet)
+		return reversePrimer.reverse_complement
+	end
 end
 
 
@@ -73,20 +88,6 @@ class DeletionExperiment < Experiment
 		#return mutatedTemplate
 	end
 
-	def getForwardPrimer
-		# Calculates the required foraward primer for the experiment and returns
-		# it as a Snippet
-		@forwardPrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=(@PPsnippet.end + 1), finish=(@PPsnippet.end + 3))
-		@forwardPrimerTemplate = @forwardPrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:right)
-		@forwardPrimer = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=@PPsnippet.start, finish=@forwardPrimerTemplate.end)
-	end
-	
-	def getReversePrimer
-		@reversePrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start = (@PPsnippet.start - 4), finish=(@PPsnippet.start - 1))
-		@reversePrimerTemplate = @reversePrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:left)
-		reversePrimer = Bio::Sequence::NA.new(@reversePrimerTemplate.snippet + @PPsnippet.snippet)
-		return reversePrimer.reverse_complement
-	end
 end
 
 
@@ -99,12 +100,12 @@ class SubstitutionExperiment < Experiment
 	
 	@@ExperimentRegex = /\A(?<presub>[#{@@AAcodes}]+)[*](?<sub>[#{@@AAcodes}])[*](?<postsub>[#{@@AAcodes}])+\z/i
 
-	def initialize(experimentString, template)
-		@experimentString = experimentString
-		@template = Snippet.new(template, template)
-		@ppTM = @@defaultPPtm - 1
+	# def initialize(experimentString, template)
+	# 	@experimentString = experimentString
+	# 	@template = Snippet.new(template, template)
+	# 	@ppTM = @@defaultPPtm - 1
 
-	end
+	# end
 
 	def setMutatedTemplate
 		preMutSnippet = @template.backTranslate(@experimentString.split('*')[0])

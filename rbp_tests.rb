@@ -343,7 +343,11 @@ def setup
 		@ExperimentObject = SubstitutionExperiment.new(@expString, @template)
 	end
 
-	def 
+	def test_mutatedTemplate
+		assert_not_equal(@template, @ExperimentObject.mutatedTemplate)
+		assert(@ExperimentObject.mutatedTemplate.include?(@ExperimentObject.forwardPrimer.to_s))
+	end
+
 end
 
 
