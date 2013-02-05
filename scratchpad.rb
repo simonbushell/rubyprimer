@@ -49,7 +49,8 @@ require "amatch"
 		MRQGKVAEAKQWMRATQSYYPYLMPRYADEIRKLPVWAPLLPELLKDCKAFAAAPGHPEA
 		KPCK-'
 
-@expString = 'LGVI*A*LIMQ'
+@expString = 'LIGS+PASTL+LLQSCI'
 
-@exp = SubstitutionExperiment.new(@expString, @template)
+@exp = InsertionExperiment.new(@expString, @template)
+puts @exp.printData
 

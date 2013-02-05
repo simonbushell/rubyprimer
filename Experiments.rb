@@ -4,6 +4,7 @@ require "amatch"
 
 class ExperimentError < StandardError ; end
 
+
 class Experiment
 
     attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer, 
@@ -52,8 +53,8 @@ class Experiment
         puts "rev PPSequence: #{@PPsnippet.reverse_complement}"
     end
 
-        def getForwardPrimer
-        # Calculates the required foraward primer for the experiment and returns
+    def getForwardPrimer
+        # Calculates the required forward primer for the experiment and returns
         # it as a Snippet
         @forwardPrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=(@PPsnippet.end + 1), finish=(@PPsnippet.end + 3))
         @forwardPrimerTemplate = @forwardPrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:right)
@@ -64,7 +65,7 @@ class Experiment
         @reversePrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start = (@PPsnippet.start - 4), finish=(@PPsnippet.start - 1))
         @reversePrimerTemplate = @reversePrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:left)
         reversePrimer = Bio::Sequence::NA.new(@reversePrimerTemplate.snippet + @PPsnippet.snippet)
-        return reversePrimer.reverse_complement
+        reversePrimer.reverse_complement
     end
 end
 
@@ -84,9 +85,6 @@ class DeletionExperiment < Experiment
         raise ExperimentError.new("C-terminal Sequence comes before N-terminal Sequence") if fivePrimeSnippet.start > threePrimeSnippet.start
         @mutatedTemplate = @template.to_s[0..fivePrimeSnippet.end] + @template.to_s[threePrimeSnippet.start..-1]
         self.setPPRegion(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, tm=@ppTM)
-        # @PPsnippet = Snippet.new(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, mutatedTemplate)
-        # @PPsnippet = @PPsnippet.adjustTM(@ppTM, ends=:both)
-        #return mutatedTemplate
     end
 
 end
@@ -94,7 +92,8 @@ end
 
 class InsertionExperiment < Experiment
     
-    @@ExperimentRegex = /\A[#{@@AAcodes}]+[ACDEFGHIKLMNPRSTVWY]+[#{@@AAcodes}]+\z/ 
+    @@ExperimentRegex = /\A[#{@@AAcodes}]+[ACDEFGHIKLMNPRSTVWY]+[#{@@AAcodes}]+\z/
+    @@defaultPPtm = 45.0
 
 	def generateInsertion(proteinSequence)
 	    optimisedCodons = Hash["G", "ggc", "E", "gaa", "D", "gat", "V", "gtg", 
@@ -105,6 +104,36 @@ class InsertionExperiment < Experiment
 	    proteinSequence.each_char { |x| generatedSequence << optimisedCodons[x]}
 	    return generatedSequence
 	end
+
+	def getForwardPrimer
+		insertSnippet = Snippet.new(@insertionSeq, @mutatedTemplate)
+		@forwardPrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=(insertSnippet.end + 1), finish=(insertSnippet.end + 3))
+		@forwardPrimerTemplate = @forwardPrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:right)
+		@forwardPrimer = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=@PPsnippet.start, finish=@forwardPrimerTemplate.end)
+	end
+
+	def getReversePrimer
+		super
+		reversePrimer = Bio::Sequence::NA.new(@reversePrimerTemplate.snippet + @PPsnippet.snippet + @insertionSeq)
+        reversePrimer.reverse_complement
+	end
+
+
+	def setMutatedTemplate
+		preMutSnippet = @template.backTranslate(@experimentString.split('+')[0])
+        @insertionSeq = self.generateInsertion(@experimentString.split('+')[1])
+        postMutSnippet = @template.backTranslate(@experimentString.split('+')[2])
+
+        @mutatedTemplate = @template.to_s[0..preMutSnippet.end] + @insertionSeq + @template.to_s[postMutSnippet.start .. -1]
+        @PPsnippet = Snippet.new(preMutSnippet.to_s, @mutatedTemplate)
+        @PPsnippet = @PPsnippet.adjustTM(@ppTM, ends=:left)
+    end
+
+    def printData
+    	super
+    	puts "Insertion Sequence: #{@insertionSeq}"
+    end
+
 end
 
 
