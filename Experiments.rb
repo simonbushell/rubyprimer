@@ -95,6 +95,8 @@ class InsertionExperiment < Experiment
     @@ExperimentRegex = /\A[#{@@AAcodes}]+[ACDEFGHIKLMNPRSTVWY]+[#{@@AAcodes}]+\z/
     @@defaultPPtm = 45.0
 
+    attr_reader :insertionSeq
+
 	def generateInsertion(proteinSequence)
 	    optimisedCodons = Hash["G", "ggc", "E", "gaa", "D", "gat", "V", "gtg", 
 	        "A", "gcg", "R", "cgc", "K", "aaa", "N", "aac", "M", "atg", "I",

@@ -271,7 +271,7 @@ end
 
 class Test_SubstitutionExperiments < Test::Unit::TestCase
 
-def setup
+	def setup
 		@template = "atgcccgctgaaacgaccgtatccggcgcgcaccccgccgccaaactgccgatttacatc
 		ctgccctgcttcctttggataggcatcgtcccctttaccttcgcgctcaaactgaaaccg
 		tcgcccgacttttaccacgatgccgccgccgcagccggcctgattgtcctgttgttcctc
@@ -368,7 +368,107 @@ def setup
 			exp = SubstitutionExperiment.new(errorString, @template)
 		end
 	end
-
 end
+
+class Test_InsertionExperiments < Test::Unit::TestCase
+
+	def setup
+		@template = "atgcccgctgaaacgaccgtatccggcgcgcaccccgccgccaaactgccgatttacatc
+		ctgccctgcttcctttggataggcatcgtcccctttaccttcgcgctcaaactgaaaccg
+		tcgcccgacttttaccacgatgccgccgccgcagccggcctgattgtcctgttgttcctc
+		acggcaggaaaaaaactgtttgatgtcaaaatccccgccatcagcttccttctgtttgca
+		atggcggcgttttggtatcttcaggcacgcctgatgaacctgatttaccccggtatgaac
+		gacatcgtctcttggattttcatcttgctcgccgtcagcgcgtgggcctgccggagcttg
+		gtcgcacacttcggacaagaacgcatcgtgaccctgtttgcctggtcgctgcttatcggc
+		tccctgcttcaatcctgcatcgtcgtcatccagtttgccggctgggaagacacccctctg
+		tttcaaaacatcatcgtttacagcgggcaaggcgtaatcggacacatcgggcagcgcaac
+		aacctcggacactacctcatgtggggcatactcgccgccgcctacctcaacggacaacga
+		aaaatccccgccgccctcggcgtaatctgcctgattatgcagaccgccgttttaggtttg
+		gtcaactcgcgcaccatcttgacctacatagccgccatcgccctcatccttcccttctgg
+		tatttccgttcggacaaatccaacaggcggacgatgctcggcatagccgcagccgtattc
+		cttaccgcgctgttccaattttccatgaacaccattctggaaacctttactggcatccgc
+		tacgaaactgccgtcgaacgcgtcgccaacggcggtttcacagacttgccgcgccaaatc
+		gaatggaataaagcccttgccgccttccagtccgccccgatattcgggcacggctggaac
+		agttttgcccaacaaaccttcctcatcaatgccgaacagcacaacatatacgacaacctc
+		ctcagcaacttgttcacccattcccacaacatcgtcctccaactccttgcagagatggga
+		atcagcggcacgcttctggttgccgcaaccctgctgacgggcattgccgggctgcttaaa
+		cgccccctgacccccgcatcgcttttcctaatctgcacgcttgccgtcagtatgtgccac
+		agtatgctcgaatatcctttgtggtatgtctatttcctcatccctttcggactgatgctc
+		ttcctgtcccccgcagaggcttcagacggcatcgccttcaaaaaagccgccaatctcggc
+		atactgaccgcctccgccgccatattcgcaggattgctgcacttggactggacatacacc
+		cggctggttaacgccttttcccccgccactgacgacagtgccaaaaccctcaaccggaaa
+		atcaacgagttgcgctatatttccgcaaacagtccgatgctgtccttttatgccgacttc
+		tccctcgtaaacttcgccctgccggaataccccgaaacccagacttgggcggaagaagca
+		accctcaaatcactaaaataccgcccccactccgccacctaccgcatcgccctctacctg
+		atgcggcaaggcaaagttgcagaagcaaaacaatggatgcgggcgacacagtcctattac
+		ccctacctgatgccccgatacgccgacgaaatccgcaaactgcccgtatgggcgccgctg
+		ctacccgaactgctcaaagactgcaaagccttcgccgccgcgcccggtcatccggaagca
+		aaaccctgcaaatga".strip.delete("\n\t")
+
+		@aaSeq = 'MPAETTVSGAHPAAKLPIYILPCFLWIGIVPFTFALKLKPSPDFYHDAAAAAGLIVLLFL
+		TAGKKLFDVKIPAISFLLFAMAAFWYLQARLMNLIYPGMNDIVSWIFILLAVSAWACRSL
+		VAHFGQERIVTLFAWSLLIGSLLQSCIVVIQFAGWEDTPLFQNIIVYSGQGVIGHIGQRN
+		NLGHYLMWGILAAAYLNGQRKIPAALGVICLIMQTAVLGLVNSRTILTYIAAIALILPFW
+		YFRSDKSNRRTMLGIAAAVFLTALFQFSMNTILETFTGIRYETAVERVANGGFTDLPRQI
+		EWNKALAAFQSAPIFGHGWNSFAQQTFLINAEQHNIYDNLLSNLFTHSHNIVLQLLAEMG
+		ISGTLLVAATLLTGIAGLLKRPLTPASLFLICTLAVSMCHSMLEYPLWYVYFLIPFGLML
+		FLSPAEASDGIAFKKAANLGILTASAAIFAGLLHLDWTYTRLVNAFSPATDDSAKTLNRK
+		INELRYISANSPMLSFYADFSLVNFALPEYPETQTWAEEATLKSLKYRPHSATYRIALYL
+		MRQGKVAEAKQWMRATQSYYPYLMPRYADEIRKLPVWAPLLPELLKDCKAFAAAPGHPEA
+		KPCK-'
+
+		@expString = 'LIGS+PASTL+LLQSCI'
+		@expectedMutTemplate = "atgcccgctgaaacgaccgtatccggcgcgcacccc
+		gccgccaaactgccgatttacatcctgccctgcttcctttggataggcatcgtccccttt
+		accttcgcgctcaaactgaaaccgtcgcccgacttttaccacgatgccgccgccgcagcc
+		ggcctgattgtcctgttgttcctcacggcaggaaaaaaactgtttgatgtcaaaatcccc
+		gccatcagcttccttctgtttgcaatggcggcgttttggtatcttcaggcacgcctgatg
+		aacctgatttaccccggtatgaacgacatcgtctcttggattttcatcttgctcgccgtc
+		agcgcgtgggcctgccggagcttggtcgcacacttcggacaagaacgcatcgtgaccctg
+		tttgcctggtcgctgcttatcggctccccggcgagcaccctgctgcttcaatcctgcatc
+		gtcgtcatccagtttgccggctgggaagacacccctctgtttcaaaacatcatcgtttac
+		agcgggcaaggcgtaatcggacacatcgggcagcgcaacaacctcggacactacctcatg
+		tggggcatactcgccgccgcctacctcaacggacaacgaaaaatccccgccgccctcggc
+		gtaatctgcctgattatgcagaccgccgttttaggtttggtcaactcgcgcaccatcttg
+		acctacatagccgccatcgccctcatccttcccttctggtatttccgttcggacaaatcc
+		aacaggcggacgatgctcggcatagccgcagccgtattccttaccgcgctgttccaattt
+		tccatgaacaccattctggaaacctttactggcatccgctacgaaactgccgtcgaacgc
+		gtcgccaacggcggtttcacagacttgccgcgccaaatcgaatggaataaagcccttgcc
+		gccttccagtccgccccgatattcgggcacggctggaacagttttgcccaacaaaccttc
+		ctcatcaatgccgaacagcacaacatatacgacaacctcctcagcaacttgttcacccat
+		tcccacaacatcgtcctccaactccttgcagagatgggaatcagcggcacgcttctggtt
+		gccgcaaccctgctgacgggcattgccgggctgcttaaacgccccctgacccccgcatcg
+		cttttcctaatctgcacgcttgccgtcagtatgtgccacagtatgctcgaatatcctttg
+		tggtatgtctatttcctcatccctttcggactgatgctcttcctgtcccccgcagaggct
+		tcagacggcatcgccttcaaaaaagccgccaatctcggcatactgaccgcctccgccgcc
+		atattcgcaggattgctgcacttggactggacatacacccggctggttaacgccttttcc
+		cccgccactgacgacagtgccaaaaccctcaaccggaaaatcaacgagttgcgctatatt
+		tccgcaaacagtccgatgctgtccttttatgccgacttctccctcgtaaacttcgccctg
+		ccggaataccccgaaacccagacttgggcggaagaagcaaccctcaaatcactaaaatac
+		cgcccccactccgccacctaccgcatcgccctctacctgatgcggcaaggcaaagttgca
+		gaagcaaaacaatggatgcgggcgacacagtcctattacccctacctgatgccccgatac
+		gccgacgaaatccgcaaactgcccgtatgggcgccgctgctacccgaactgctcaaagac
+		tgcaaagccttcgccgccgcgcccggtcatccggaagcaaaaccctgcaaatga".strip.delete("\n\t")
+		@ExperimentObject = InsertionExperiment.new(@expString, @template)
+	end
+
+	def test_mutatedTemplate
+		assert_not_equal(@template, @ExperimentObject.mutatedTemplate)
+	end
+
+	def test_primers
+		assert(@ExperimentObject.mutatedTemplate.include?(@ExperimentObject.forwardPrimer.to_s))
+		revPrimer = Bio::Sequence::NA.new(@ExperimentObject.reversePrimer)
+		assert(@ExperimentObject.mutatedTemplate.include?(revPrimer.reverse_complement))
+	end
+
+	def test_insertions
+		assert(! @ExperimentObject.template.to_s.include?(@ExperimentObject.insertionSeq))
+		assert(@ExperimentObject.mutatedTemplate.include?(@ExperimentObject.insertionSeq))
+	end
+end
+
+
+
 
 
