@@ -1,8 +1,8 @@
 require "./Snippet"
 require "./Experiments"
-require "test/unit"
 require "Bio"
 require "amatch"
+
 
 
 @template = "atgcccgctgaaacgaccgtatccggcgcgcaccccgccgccaaactgccgatttacatc

@@ -268,6 +268,7 @@ class Test_DeletionExperiments < Test::Unit::TestCase
 	end
 end
 
+
 class Test_SubstitutionExperiments < Test::Unit::TestCase
 
 def setup
@@ -345,7 +346,27 @@ def setup
 
 	def test_mutatedTemplate
 		assert_not_equal(@template, @ExperimentObject.mutatedTemplate)
+	end
+
+	def test_primers
 		assert(@ExperimentObject.mutatedTemplate.include?(@ExperimentObject.forwardPrimer.to_s))
+		revPrimer = Bio::Sequence::NA.new(@ExperimentObject.reversePrimer)
+		assert(@ExperimentObject.mutatedTemplate.include?(revPrimer.reverse_complement))
+	end
+
+	def test_errors
+		errorString = "PAISF*A*FAM"
+		assert_raise ExperimentError do
+			exp = SubstitutionExperiment.new(errorString, @template)
+		end
+		errorString = "*D*"
+		assert_raise SnippetError do
+			exp = SubstitutionExperiment.new(errorString, @template)
+		end
+		errorString = "M*A*AETTVSG"
+		assert_raise SnippetError do
+			exp = SubstitutionExperiment.new(errorString, @template)
+		end
 	end
 
 end
