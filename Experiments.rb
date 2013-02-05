@@ -118,7 +118,6 @@ class InsertionExperiment < Experiment
         reversePrimer.reverse_complement
 	end
 
-
 	def setMutatedTemplate
 		preMutSnippet = @template.backTranslate(@experimentString.split('+')[0])
         @insertionSeq = self.generateInsertion(@experimentString.split('+')[1])
