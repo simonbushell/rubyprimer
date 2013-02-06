@@ -1,5 +1,7 @@
-require "./Snippet"
-require "./Experiments"
+
+
+require "./lib/Snippet"
+require "./lib/Experiments"
 require "test/unit"
 require "Bio"
 

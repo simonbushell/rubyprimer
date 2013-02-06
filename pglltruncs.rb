@@ -1,6 +1,7 @@
-require "./Snippet"
-require "./Experiments"
+require "./lib/Snippet"
+require "./lib/Experiments"
 require "Bio"
+require 'ruby-debug' ; Debugger.start(:post_mortem => true)
 
 
 puts "** vcPgll truncation primers **"
@@ -43,11 +44,54 @@ nMtruncations_to_make = ["LLFKN-DGHH",
 						"IKKIP-DGHH",
 						"GDIH-QQAKE"]
 
-nMtruncations_to_make.each do |x|
-	puts x
-	obj = DeletionExperiment.new(x, nMtemplate)
+# nMtruncations_to_make.each do |x|
+# 	puts x
+# 	obj = DeletionExperiment.new(x, nMtemplate)
+# 	obj.printData
+# 	puts "======"
+# end
+
+vctemplate = "atgaactgcatggcaactttgctgttaagtggcactcggttggaacctcacgctccgaac
+ctaccactcaataaaccgtttctttttgccttggccgtggtttatctgctcgccatgcat
+ttctttatgcctaaccccggcggtgctggactggcactctccttcaatactacggtctgg
+atcgcgaccagcataacactggcgattggtctgtatcagttggcgaataatcaagcgctg
+cgttattccaagctgaccattggactttggttaagctgtgctctgctaaccctacccatc
+acttactcgaatgccgattggtttcatactcttggccgcttagtgggtctctgggctgga
+tttactctgtttctcgtcttacaacaatttcgctttagcaacaaacataaacagcgtttg
+ctgtggtttattctactgggtagcgtcattgaagccgtgatcggtttaattcaatacttt
+tggttagagccgggtaacccctttggttatgacaccgaagcaaatcgaccgtatggtatt
+ttccagcaaccaaatgtgatggccagtttcctcgcaacagggctggtgttgtcaggttat
+ttgctggccagacaaccggaaaaatatgactcgcgctggagcaaaatcggcatcctttac
+gcgacaccgctactcacggctcccttactggtcgtactcgcctctcgcactgggtggctg
+gccagtttattgagtatcgctctggttgccccttacttatatcgattcgcttcacgtcgg
+cgctttacgctctggcttcttgccataactcttgggatttgtgcaggttttaccgctatg
+tatggccaaggaacctctggttttgtcgcgaataaggctgacttagaaagcccacgtcgt
+ttcacatttccacaaaccatagatatgatcatcgaaaagccttttacaggctatggttat
+ggcaaatttgaggcgcagtatctgctttatactgctcgccaacatcagttaaatagcagc
+tatccagcaggcttagcatcgatggatcacccacacaatgagctgttgtattggggggta
+gaaggcggattactacctgtaatgggtatattactcgccgcctgtttttgtgctctacgc
+atttatgccgccaaacgtggcactcgcatggccatgctggctctgtttgtgccgatcacc
+ttacacgctcaattggagtatccgttttaccactccgcaattcactggatcacctttatc
+atcctaatctactgggtagatcaacgggtcgcacgctatcgactggccagtttcaccacg
+ctcaccaaatctttattgcgtattaccagcttagtgctgccgattgtcaccagcttgtat
+atggtcacagcgttacacaccaactatgtgttaacgcaatttgaaaaatctcagccactc
+aatcctgaattgctgaaaaacgtgactaacccattggtatggcaagaccgatttgattgg
+gatatctacagcacctatctgaacatcgggctccatgaacaaaaagcggagcttatccaa
+ccctatatcgattggtcgttacagatcattcaacataaaccgcgcccggccttctattca
+aacctgattttggcttatcaaggtttaggcgatacgagccgtgcgcagcaaatccgccgc
+gaggccgaatttctgttccccaatcaagatttcagtacagtccagtaccacccctcgata
+aaggtcaacagtgccacatctgatgctgaggttccctcagccgcgacaccccaccaccaccaccaccactaaaagcttggctgttttggcggatgagaga"
+
+vCtruncations_to_make = ["TQFE-HHHHHH",
+						 "LNIGL-HHHHHH",
+						 "LQII-HHHHHH",
+						 "AYQG-HHHHHH",
+						 "AEFL-HHHHHH",
+						 "SIKV-HHHHHH"]
+
+vCtruncations_to_make.each do |x|
+	obj = DeletionExperiment.new(x, vctemplate)
 	obj.printData
 	puts "======"
 end
-
 
