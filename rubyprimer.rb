@@ -3,6 +3,7 @@ require './lib/Experiments'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'rack'
+require 'Bio'
 
 class RubyPrimerApp < Sinatra::Base
 
@@ -17,7 +18,9 @@ class RubyPrimerApp < Sinatra::Base
 	post '/submit' do
 		"#{params}"
 	end
+
+	post '/ajaxtranslate' do
+		dnaobj = Bio::Sequence::NA.new(params[:DNAinput])
+		return dnaobj.translate
+	end
 end
-
-
-
