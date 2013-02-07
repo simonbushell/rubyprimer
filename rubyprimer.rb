@@ -1,15 +1,23 @@
 require './lib/Snippet'
 require './lib/Experiments'
 require 'sinatra'
-require 'haml'
+require 'sinatra/reloader'
+require 'rack'
 
+class RubyPrimerApp < Sinatra::Base
 
-get '/' do 
-	erb :index
+	configure :development do
+    	register Sinatra::Reloader
+  	end
+
+	get '/' do 
+		erb :index
+	end
+
+	post '/submit' do
+		"#{params}"
+	end
 end
 
-post '/' do
-	m = params[:namea]
-	"Hello #{m}"
-end
+
 
