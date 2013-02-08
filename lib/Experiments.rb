@@ -17,8 +17,8 @@ class Experiment
     def initialize(experimentString, template)
         @experimentString = experimentString
         @template = Snippet.new(template, template)
-        @ppTM = @@defaultPPtm - 1
-        while not @forwardPrimer or @forwardPrimer.length <= 30
+        @ppTM = @@defaultPPtm
+        while not @forwardPrimer or @ppTM <= @@defaultPPtm or @forwardPrimer.length < 30
             @ppTM += 1
             self.setMutatedTemplate
             self.getForwardPrimer
@@ -29,7 +29,7 @@ class Experiment
     def setPPRegion(sequence, tm=nil)
         @PPsnippet = Snippet.new(sequence, @mutatedTemplate)
         if tm
-            @PPsnippet = @PPsnippet.adjustTM(@ppTM, ends=:both)
+            @PPsnippet = @PPsnippet.adjustTM(tm, ends=:both)
         end
     end
 
@@ -68,6 +68,16 @@ class Experiment
         reversePrimer = Bio::Sequence::NA.new(@reversePrimerTemplate.snippet + @PPsnippet.snippet)
         reversePrimer.reverse_complement
     end
+
+    def printForwardPrimer
+        "<span class='highlightPP'>#{@PPsnippet.to_s}</span>#{@forwardPrimerTemplate.to_s}"
+    end
+
+    def printReversePrimer
+        rpPP = @PPsnippet.reverse_complement
+        rpPT = @reversePrimerTemplate.reverse_complement
+        "<span class='highlightPP'>#{rpPP}</span>#{rpPT}"
+    end
 end
 
 
@@ -84,7 +94,9 @@ class DeletionExperiment < Experiment
         threePrimeSnippet = @template.backTranslate(templatebits["threePrime"])
         raise ExperimentError.new("C-terminal Sequence comes before N-terminal Sequence") if fivePrimeSnippet.start > threePrimeSnippet.start
         @mutatedTemplate = @template.to_s[0..fivePrimeSnippet.end] + @template.to_s[threePrimeSnippet.start..-1]
-        self.setPPRegion(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, tm=@ppTM)
+        @PPsnippet = Snippet.new(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, @mutatedTemplate)
+        @PPsnippet = @PPsnippet.adjustTM(@ppTM, ends=:both)
+        #self.setPPRegion(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, tm=@ppTM)
     end
 end
 

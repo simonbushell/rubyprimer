@@ -15,13 +15,25 @@ class Bio::Sequence::NA
         return gc.quo(at + gc).to_f
     end
 
-    def tm(ion=0.05, mismatch=0)
-        mismatch_pc = mismatch.to_f / self.length * 100
-        t = 81.5 + 
-        16.6 * Math.log10(ion/(1 + 0.7 * ion)) + 
-        0.41 * self.gc_percent - 
-        500.0/self.length - mismatch_pc
-        return t
+    # def tm(ion=0.05, mismatch=0)
+    #     mismatch_pc = mismatch.to_f / self.length * 100
+    #     t = 81.5 + 
+    #     16.6 * Math.log10(ion/(1 + 0.7 * ion)) + 
+    #     0.41 * self.gc_percent - 
+    #     500.0/self.length - mismatch_pc
+    #     return t
+    # end
+
+    def tm()
+        count = self.composition
+        at = count['a'] + count['t'] + count['u']
+        gc = count['g'] + count['c']
+        if self.length < 14
+            tm = at * 2.0 + gc * 4.0
+        else
+            tm = 64.9 + 41.0*(gc - 16.4)/(at+gc)
+        end
+        return tm
     end
 end
 

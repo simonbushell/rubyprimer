@@ -3,55 +3,66 @@
             <div class="span10 offset1">
                 <h3><%= x.experimentString.upcase %></h3>
                 <div class="row">
-                    <div class="span6">
+                    <div class="span8">
                         <div class="row">
                             <div class="span2">
                                 Forward Primer:
                             </div>
-                            <div class="span4">
-                                <span class="primerOutput"><%= x.forwardPrimer %></span>
+                            <div class="span6">
+                                <span class="primerOutput"><%= x.printForwardPrimer %></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="span6">
+                    <div class="span8">
                         <div class="row">
                             <div class="span2">
                                 Reverse Primer:
                             </div>
-                            <div class="span4">
-                                <span class="primerOutput"><%= x.reversePrimer %></span><br>
+                            <div class="span6">
+                                <span class="primerOutput"><%= x.printReversePrimer %> (<%= x.reversePrimer.length %>bp)<span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="span6">
+                    <div class="span8">
                         <div class="row">
                             <div class="span2">
                                 Primer-Primer Tm:
                             </div>
-                            <div class="span4">
+                            <div class="span6">
                                 <span class="primerOutput"><%= x.ppTM %></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="span6">
+                    <div class="span8">
                         <div class="row">
                             <div class="span2">
-                                Primer-Template Tm:
+                                Fwd Primer-Template Tm:
                             </div>
-                            <div class="span4">
+                            <div class="span6">
                                 <span class="primerOutput"><%= x.forwardPrimerTemplate.tm.round(1) %></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                    <hr>
+                <div class="row">
+                    <div class="span8">
+                        <div class="row">
+                            <div class="span2">
+                                Rev Primer-Template Tm:
+                            </div>
+                            <div class="span6">
+                                <span class="primerOutput"><%= x.reversePrimerTemplate.tm.round(1) %></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <hr>
             </div>
         </div>
 <% end %>
