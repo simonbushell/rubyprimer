@@ -31,7 +31,7 @@ class Snippet
     attr_reader :snippet, :template, :start, :end, :BRSnippet, :BRTemplate
 
     def initialize(snippetSequence, templateSequence, start=nil, finish=nil)
-        @template = templateSequence.strip.delete("\n\t")
+        @template = templateSequence.strip.delete("\n\t\r")
         if start and finish
             @start = start
             @end = finish

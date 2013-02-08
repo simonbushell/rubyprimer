@@ -9,7 +9,7 @@ class Experiment
 
     attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer, 
     :forwardPrimerTemplate, :reversePrimer, :reversePrimerTemplate, :template,
-    :experimentString
+    :experimentString, :ppTM
 
     @@AAcodes = 'acdefghiklmnpqrstvwy'
     @@defaultPPtm = 50.0
@@ -29,7 +29,7 @@ class Experiment
     def setPPRegion(sequence, tm=nil)
         @PPsnippet = Snippet.new(sequence, @mutatedTemplate)
         if tm
-            @PPsnippet = @PPsnippet.adjustTM(@ppTM, ends=:both)#
+            @PPsnippet = @PPsnippet.adjustTM(@ppTM, ends=:both)
         end
     end
 

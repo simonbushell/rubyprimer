@@ -23,13 +23,19 @@ class RubyPrimerApp < Sinatra::Base
 		erb :index
 	end
 
+	get '/about' do
+		erb :about
+	end
+
 	post '/submit' do
 		experiments = params[:experimentStrings].gsub(/\s+/, "").split(',')
+		params[:DNAinput] = params[:DNAinput].delete("\n\t\r")
 		@results = []
 		$logger.info("input received: #{params[:DNAinput]}\n#{experiments}")
 		experiments.each do |e|
 			if e =~ /\A[#{@@AAcodes}]+-[#{@@AAcodes}]+\z/i
 				@results << DeletionExperiment.new(e, params[:DNAinput])
+				$logger.info(@results[-1].forwardPrimer)
 			elsif e =~ /\A[#{@@AAcodes}]+\+[#{@@AAcodes}]+\+[#{@@AAcodes}]+\z/i
 				@results << InsertionExperiment.new(e, params[:DNAinput])
 			elsif e =~ /\A[#{@@AAcodes}]+\*[#{@@AAcodes}]+\*[#{@@AAcodes}]+\z/i
@@ -39,6 +45,7 @@ class RubyPrimerApp < Sinatra::Base
 				@results << ErrorExperiment.new(e, params[:DNAinput])
 			end			
 		end
+
 		erb :output 
 	end
 
