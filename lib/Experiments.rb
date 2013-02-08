@@ -8,7 +8,8 @@ class ExperimentError < StandardError ; end
 class Experiment
 
     attr_reader :mutatedTemplate, :PPsnippet, :DefaultPPtm, :forwardPrimer, 
-    :forwardPrimerTemplate, :reversePrimer, :reversePrimerTemplate, :template
+    :forwardPrimerTemplate, :reversePrimer, :reversePrimerTemplate, :template,
+    :experimentString
 
     @@AAcodes = 'acdefghiklmnpqrstvwy'
     @@defaultPPtm = 50.0
@@ -70,7 +71,6 @@ class Experiment
 end
 
 
-
 class DeletionExperiment < Experiment
 
     @@ExperimentRegex = /\A[#{@@AAcodes}]+-[#{@@AAcodes}]+\z/i
@@ -86,13 +86,12 @@ class DeletionExperiment < Experiment
         @mutatedTemplate = @template.to_s[0..fivePrimeSnippet.end] + @template.to_s[threePrimeSnippet.start..-1]
         self.setPPRegion(fivePrimeSnippet.to_s + threePrimeSnippet.to_s, tm=@ppTM)
     end
-
 end
 
 
 class InsertionExperiment < Experiment
     
-    @@ExperimentRegex = /\A[#{@@AAcodes}]+[ACDEFGHIKLMNPRSTVWY]+[#{@@AAcodes}]+\z/
+    @@ExperimentRegex = /\A[#{@@AAcodes}]+[#{@@AAcodes}]+[#{@@AAcodes}]+\z/i
     @@defaultPPtm = 45.0
 
     attr_reader :insertionSeq
@@ -134,7 +133,6 @@ class InsertionExperiment < Experiment
     	super
     	puts "Insertion Sequence: #{@insertionSeq}"
     end
-
 end
 
 
@@ -154,4 +152,12 @@ class SubstitutionExperiment < Experiment
         mutatedRegion = preMutSnippet.to_s + self.getBestCodon(codonToChange, mutationAA) + postMutSnippet.to_s
         self.setPPRegion(mutatedRegion, tm=@ppTM)
     end
+end
+
+
+class ErrorExperiment < Experiment
+
+    def initialize(experimentString, template)
+    end
+
 end

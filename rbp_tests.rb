@@ -251,6 +251,7 @@ class Test_DeletionExperiments < Test::Unit::TestCase
 		   # p @ExperimentObject.forwardPrimerTemplate.tm
 		   # p @ExperimentObject.PPsnippet.tm
 		assert(@expectedMutTemplate.include?(@ExperimentObject.forwardPrimerTemplate.snippet))
+		assert(@ExperimentObject.mutatedTemplate.include?(@ExperimentObject.forwardPrimer.to_s))
 	end
 
 	def test_makeReversePrimer
