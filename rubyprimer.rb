@@ -11,7 +11,7 @@ class RubyPrimerApp < Sinatra::Base
 	@@AAcodes = 'acdefghiklmnpqrstvwy'
 	
 	configure :production, :development do
-    	enable :logging
+    	enable :logging, :sessions
     	$logger = Logger.new(STDOUT)
   	end
 	
@@ -43,9 +43,9 @@ class RubyPrimerApp < Sinatra::Base
 			else
 				$logger.warn("Error Experiment created")
 				@results << ErrorExperiment.new(e, params[:DNAinput])
-			end			
+			end
 		end
-
+		session[:mostRecentResult] = @results			
 		erb :output 
 	end
 

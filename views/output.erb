@@ -1,4 +1,5 @@
 <% for x in @results %>
+<div class="outputContainer">
         <div class="row">
             <div class="span10 offset1">
                 <h3><%= x.experimentString.upcase %></h3>
@@ -9,7 +10,7 @@
                                 Forward Primer:
                             </div>
                             <div class="span6">
-                                <span class="primerOutput"><%= x.printForwardPrimer %></span>
+                                <span class="primerOutput"><%= x.printForwardPrimer %> (<%= x.forwardPrimer.length %> bp)</span>
                             </div>
                         </div>
                     </div>
@@ -21,7 +22,7 @@
                                 Reverse Primer:
                             </div>
                             <div class="span6">
-                                <span class="primerOutput"><%= x.printReversePrimer %> (<%= x.reversePrimer.length %>bp)<span>
+                                <span class="primerOutput"><%= x.printReversePrimer %> (<%= x.reversePrimer.length %> bp)<span>
                             </div>
                         </div>
                     </div>
@@ -61,8 +62,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="span2">
+                        <input type="button" class="btn btn-info btn-small showMutatedTemplate" value="Show Mutated Template"></input>
+                    </div>
                 </div>
-                <hr>
             </div>
         </div>
+        <div class="row">
+            <div class="span8 offset1 well mutatedTemplate">
+                    <p><%= x.mutatedTemplate %></p>
+            </div>
+        </div>
+        <hr>
+</div>
 <% end %>
