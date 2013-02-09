@@ -1,7 +1,7 @@
 require './lib/Snippet'
 require './lib/Experiments'
 require 'sinatra'
-require 'sinatra/reloader'
+#require 'sinatra/reloader'
 require 'rack'
 require 'Bio'
 require 'logger'
@@ -10,14 +10,16 @@ class RubyPrimerApp < Sinatra::Base
 
 	@@AAcodes = 'acdefghiklmnpqrstvwy'
 	
+	set :environment, :production
+
 	configure :production, :development do
     	enable :logging, :sessions
     	$logger = Logger.new(STDOUT)
   	end
 	
-	configure :development do
-    	register Sinatra::Reloader
-  	end
+	# configure :development do
+ #    	register Sinatra::Reloader
+ #  	end
 
 	get '/' do 
 		erb :index
@@ -45,7 +47,7 @@ class RubyPrimerApp < Sinatra::Base
 				@results << ErrorExperiment.new(e, params[:DNAinput])
 			end
 		end
-		session[:mostRecentResult] = @results			
+		#session[:mostRecentResult] = @results			
 		erb :output 
 	end
 
