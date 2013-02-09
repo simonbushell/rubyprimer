@@ -1,5 +1,5 @@
 require "./lib/Snippet"
-require "Bio"
+require "bio"
 require "amatch"
 
 class ExperimentError < StandardError ; end

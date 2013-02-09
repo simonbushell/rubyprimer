@@ -3,7 +3,7 @@ require './lib/Experiments'
 require 'sinatra'
 #require 'sinatra/reloader'
 require 'rack'
-require 'Bio'
+require 'bio'
 require 'logger'
 
 class RubyPrimerApp < Sinatra::Base

@@ -1,4 +1,4 @@
-require 'Bio'
+require 'bio'
 
 class SnippetError < StandardError ; end
 class DNAFormatError < StandardError ; end
