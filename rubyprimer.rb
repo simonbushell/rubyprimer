@@ -35,16 +35,20 @@ class RubyPrimerApp < Sinatra::Base
 		@results = []
 		$logger.info("input received: #{params[:DNAinput]}\n#{experiments}")
 		experiments.each do |e|
-			if e =~ /\A[#{@@AAcodes}]+-[#{@@AAcodes}]+\z/i
-				@results << DeletionExperiment.new(e, params[:DNAinput])
-				$logger.info(@results[-1].forwardPrimer)
-			elsif e =~ /\A[#{@@AAcodes}]+\+[#{@@AAcodes}]+\+[#{@@AAcodes}]+\z/i
-				@results << InsertionExperiment.new(e, params[:DNAinput])
-			elsif e =~ /\A[#{@@AAcodes}]+\*[#{@@AAcodes}]+\*[#{@@AAcodes}]+\z/i
-				@results << SubstitutionExperiment.new(e, params[:DNAinput])
-			else
-				$logger.warn("Error Experiment created")
-				@results << ErrorExperiment.new(e, params[:DNAinput])
+			begin
+				if e =~ /\A[#{@@AAcodes}]+-[#{@@AAcodes}]+\z/i
+					@results << DeletionExperiment.new(e, params[:DNAinput])
+					$logger.info(@results[-1].forwardPrimer)
+				elsif e =~ /\A[#{@@AAcodes}]+\+[#{@@AAcodes}]+\+[#{@@AAcodes}]+\z/i
+					@results << InsertionExperiment.new(e, params[:DNAinput])
+				elsif e =~ /\A[#{@@AAcodes}]+\*[#{@@AAcodes}]+\*[#{@@AAcodes}]+\z/i
+					@results << SubstitutionExperiment.new(e, params[:DNAinput])
+				else
+					$logger.warn("Error Experiment created")
+					@results << ErrorExperiment.new(e, params[:DNAinput])
+				end
+			rescue SnippetError, ExperimentError, DNAIndexError
+				@results << ErrorExperiment.new(e, params[:DNAinput], errorString=$!)
 			end
 		end
 		#session[:mostRecentResult] = @results			

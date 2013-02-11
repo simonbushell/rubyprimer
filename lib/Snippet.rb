@@ -119,12 +119,12 @@ class Snippet
     end
 
     def start=(start)
-        raise DNAIndexError.new("can't have a negative start!") if start < 0
+        raise DNAIndexError.new("5' Flanking Sequence Required") if start < 0
         initialize(snippetSequence=nil, templateSequence=@template, start=start, finish=self.end)
     end
 
     def end=(endVal)
-        raise DNAIndexError.new("end value > template length") if endVal >= @template.length
+        raise DNAIndexError.new("3' Flanking Sequence Required") if endVal >= @template.length
         initialize(snippetSequence=nil, templateSequence=@template, start=self.start, finish=endVal)
     end
 
