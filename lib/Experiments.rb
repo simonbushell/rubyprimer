@@ -3,6 +3,7 @@ require "bio"
 require "amatch"
 
 class ExperimentError < StandardError ; end
+class RubyPrimerError < StandardError ; end
 
 
 class Experiment
@@ -25,7 +26,7 @@ class Experiment
             self.getReversePrimer
         end
         if ! self.mutatedTemplate.include?(@forwardPrimer.to_s) and ! self.mutatedTemplate.include?(@reversePrimer.reverse_complement)
-            raise ExperimentError("Internal Error: Contact Simon")
+            raise RubyPrimerError("Internal Error: Contact Simon")
         end
     end
 
@@ -79,6 +80,14 @@ class Experiment
         rpPP = @PPsnippet.reverse_complement
         rpPT = @reversePrimerTemplate.reverse_complement
         "<span class='highlightPP'>#{rpPP}</span>#{rpPT}"
+    end
+
+    def log
+        entry = "#{self.class}\n#{@template}, #{@experimentString}\nFP: #{@forwardPrimer.to_s}, RP: #{reversePrimer.to_s}\nPPtm: #{@PPsnippet.tm.round(1)}, FPT: #{@forwardPrimerTemplate.tm.round(1)}, RPT: #{@reversePrimerTemplate.tm.round(1)}\nPP Seq: #{@PPsnippet.to_s}"
+        if @insertionSeq
+            entry << "\nInsertion: #{@insertionSeq}"
+        end
+        return entry
     end
 end
 
@@ -178,4 +187,15 @@ class ErrorExperiment < Experiment
         @experimentString = experimentString
         @template = template
     end
+
+    def printData
+        puts "Error Experiment Created"
+        puts @experimentString
+        puts @template
+    end
+
+    def log
+        return "Error in Experiment (#{@errorString})\n#{@template}, #{experimentString}"
+    end
+
 end
