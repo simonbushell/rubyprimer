@@ -169,7 +169,11 @@ end
 
 class ErrorExperiment < Experiment
 
-    def initialize(experimentString, template)
-    end
+    attr_reader :errorString
 
+    def initialize(experimentString, template, errorString=nil)
+        @errorString = errorString
+        @experimentString = experimentString
+        @template = template
+    end
 end
