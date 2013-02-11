@@ -22,7 +22,10 @@ class Experiment
             @ppTM += 1
             self.setMutatedTemplate
             self.getForwardPrimer
-            @reversePrimer = self.getReversePrimer
+            self.getReversePrimer
+        end
+        if ! self.mutatedTemplate.include?(@forwardPrimer.to_s) and ! self.mutatedTemplate.include?(@reversePrimer.reverse_complement)
+            raise ExperimentError("Internal Error: Contact Simon")
         end
     end
 
@@ -65,8 +68,7 @@ class Experiment
     def getReversePrimer
         @reversePrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start = (@PPsnippet.start - 4), finish=(@PPsnippet.start - 1))
         @reversePrimerTemplate = @reversePrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:left)
-        reversePrimer = Bio::Sequence::NA.new(@reversePrimerTemplate.snippet + @PPsnippet.snippet)
-        reversePrimer.reverse_complement
+        @reversePrimer = Bio::Sequence::NA.new(@reversePrimerTemplate.snippet + @PPsnippet.snippet).reverse_complement
     end
 
     def printForwardPrimer

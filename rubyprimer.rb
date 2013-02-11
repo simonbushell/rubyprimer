@@ -51,7 +51,6 @@ class RubyPrimerApp < Sinatra::Base
 				@results << ErrorExperiment.new(e, params[:DNAinput], errorString=$!)
 			end
 		end
-		#session[:mostRecentResult] = @results			
 		erb :output 
 	end
 
