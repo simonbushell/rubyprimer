@@ -43,8 +43,9 @@ class RubyPrimerApp < Sinatra::Base
 				elsif e =~ /\A[#{@@AAcodes}]+\*[#{@@AAcodes}]+\*[#{@@AAcodes}]+\z/i
 					@results << SubstitutionExperiment.new(e, params[:DNAinput])
 				else
-					# $logger.warn("Error Experiment created")
-					@results << ErrorExperiment.new(e, params[:DNAinput])
+					@results << ErrorExperiment.new(e, params[:DNAinput], errorString="Unknown Experiment String")
+					$logger.error("#{@results[-1].log}")
+
 				end
 			rescue SnippetError, ExperimentError, DNAIndexError
 				$logger.error("#{$!}. ExperimentString: #{e}. Template: #{params[:DNAinput]}")
