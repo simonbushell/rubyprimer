@@ -31,7 +31,7 @@ class RubyPrimerApp < Sinatra::Base
 
 	post '/submit' do
 		experiments = params[:experimentStrings].gsub(/\s+/, "").split(',')
-		params[:DNAinput] = params[:DNAinput].delete("\n\t\r")
+		params[:DNAinput] = params[:DNAinput].gsub(/[^actg]/i, '').downcase
 		@results = []
 		# $logger.info("input received: #{params[:DNAinput]}\n#{experiments}")
 		experiments.each do |e|
@@ -62,7 +62,7 @@ class RubyPrimerApp < Sinatra::Base
 	end
 
 	post '/ajaxtranslate' do
-		dnaobj = Bio::Sequence::NA.new(params[:DNAinput])
+		dnaobj = Bio::Sequence::NA.new(params[:DNAinput].gsub(/[^actg]/i, '').downcase)
 		return dnaobj.translate
 	end
 end
