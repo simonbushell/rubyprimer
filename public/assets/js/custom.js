@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
-  // $(".mutatedTemplate").hide();
+  $(".mutatedTemplate").hide();
+  $(".cyclingParameters").hide();
 
   //Event handler to populate div with translation from Ajax
   $("#translateButton").click(function(){
@@ -23,5 +24,10 @@ $(document).ready(function(){
   //Event handler to show mutated template in output screem
   $('.showMutatedTemplate').click(function(){
     $(this).parents('.outputContainer').find('.mutatedTemplate').slideToggle();
-    });
+  });
+
+  //Event handler to show mutated template in output screem
+  $('.showCyclingParameters').click(function(){
+    $(this).parents('.outputContainer').find('.cyclingParameters').slideToggle();
+  });  
 });
