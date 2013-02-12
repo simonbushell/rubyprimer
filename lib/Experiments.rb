@@ -91,7 +91,7 @@ class Experiment
     end
 
     def pcrConditions
-        Hash[:cycles, 18, :annealing, [@forwardPrimerTemplate.tm, @reversePrimerTemplate.tm].min.round(1) - 5.0, :finalannealing, @PPsnippet.tm - 5.0]
+        Hash[:cycles, 18, :annealing, [@forwardPrimerTemplate.tm, @reversePrimerTemplate.tm].min.round(1) - 5.0, :finalannealing, (@PPsnippet.tm - 5.0).round(1)]
     end
 end
 
