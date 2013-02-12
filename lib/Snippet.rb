@@ -43,13 +43,13 @@ class Snippet
     attr_reader :snippet, :template, :start, :end, :BRSnippet, :BRTemplate
 
     def initialize(snippetSequence, templateSequence, start=nil, finish=nil)
-        @template = templateSequence.strip.delete("\n\t\r")
+        @template = templateSequence.strip.delete("\n\t\r").downcase
         if start and finish
             @start = start
             @end = finish
             @snippet = @template[@start..@end]
         else
-            @snippet = snippetSequence.strip.delete("\n\t")
+            @snippet = snippetSequence.strip.delete("\n\t").downcase
             raise SnippetError.new("0 or >1 snippet occurrence found") if @template.scan(@snippet).length != 1
             @start = @template.index(@snippet)
             raise SnippetError unless @start 
