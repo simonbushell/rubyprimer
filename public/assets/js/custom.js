@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-  $(".mutatedTemplate").hide();
+  // $(".mutatedTemplate").hide();
 
   //Event handler to populate div with translation from Ajax
   $("#translateButton").click(function(){

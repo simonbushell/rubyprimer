@@ -69,11 +69,11 @@ class Snippet
         if ends == :both
             while newSnippet.tm < tm
                 newSnippet.start -= 1
-                newSnippet.end += 1 if newSnippet.tm < tm
+                newSnippet.end += 1 #if newSnippet.tm < tm
             end
             while newSnippet.tm > tm
                 newSnippet.start += 1
-                newSnippet.end -= 1 if newSnippet.tm > tm
+                newSnippet.end -= 1 #if newSnippet.tm > tm
             end
             return newSnippet
         end
