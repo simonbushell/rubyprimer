@@ -25,7 +25,7 @@ class Experiment
             self.getForwardPrimer
             self.getReversePrimer
         end
-        if ! self.mutatedTemplate.include?(@forwardPrimer.to_s) and ! self.mutatedTemplate.include?(@reversePrimer.reverse_complement)
+        if ! self.mutatedTemplate.include?(@forwardPrimer.to_s) or ! self.mutatedTemplate.include?(@reversePrimer.reverse_complement)
             raise RubyPrimerError("Internal Error: Contact Simon")
         end
     end
