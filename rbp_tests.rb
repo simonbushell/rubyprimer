@@ -1,9 +1,11 @@
-
-
+require "./rubyprimer"
 require "./lib/Snippet"
 require "./lib/Experiments"
 require "test/unit"
-require "Bio"
+require "bio"
+require "rack/test"
+
+ENV['RACK_ENV'] = 'test'
 
 
 class TestSnippet < Test::Unit::TestCase 
@@ -470,6 +472,28 @@ class Test_InsertionExperiments < Test::Unit::TestCase
 		assert(@ExperimentObject.mutatedTemplate.include?(@ExperimentObject.insertionSeq))
 	end
 end
+
+class Test_Website < Test::Unit::TestCase
+	include Rack::Test::Methods
+
+	def app
+		RubyPrimerApp
+	end
+
+	def test_index_loads
+	    get '/'
+	    assert last_response.ok?
+	    assert last_response.body.include?('DNA Coding Sequence')
+  	end
+
+  	def test_ajax_translate
+  		post '/ajaxtranslate', params={:DNAinput => 'tcgatcgatcac'}
+  		assert last_response.ok?
+  		assert last_response.body.include?('SIDH')
+  	end
+
+end
+
 
 
 
