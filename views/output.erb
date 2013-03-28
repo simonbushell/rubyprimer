@@ -83,13 +83,14 @@
                         <p><%= x.mutatedTemplate %></p>
                     </div>
                     <div class="span4 well cyclingParameters">
+                        <p>Assuming <em>pfu</em> polymerase</p>
                         <ul>
                             <li>95C for 7 minutes</li>
                             <li><%= x.pcrConditions[:cycles] %> cycles of</li>
                             <ul>
                                 <li>95C for 1 minute</li>
                                 <li><%= x.pcrConditions[:annealing] %>C for 1 minute</li>
-                                <li>68C per 1kB plasmid length</li>
+                                <li>68C for 1 minute per 1kB plasmid length</li>
                             </ul>
                             <li><%= x.pcrConditions[:finalannealing]%>C for 5 minutes</li>
                             <li>68C for 15 minutes</li>
