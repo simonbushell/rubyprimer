@@ -134,8 +134,8 @@ class InsertionExperiment < Experiment
 	end
 
 	def getForwardPrimer
-		insertSnippet = Snippet.new(@insertionSeq, @mutatedTemplate)
-		@forwardPrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=(insertSnippet.end + 1), finish=(insertSnippet.end + 3))
+		@insertSnippet = Snippet.new(@insertionSeq, @mutatedTemplate)
+		@forwardPrimerTemplate = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=(@insertSnippet.end + 1), finish=(@insertSnippet.end + 3))
 		@forwardPrimerTemplate = @forwardPrimerTemplate.adjustTM(@PPsnippet.tm + 5.0, ends=:right)
 		@forwardPrimer = Snippet.new(snippetSequence = nil, templateSequence=@mutatedTemplate, start=@PPsnippet.start, finish=@forwardPrimerTemplate.end)
 	end
@@ -145,6 +145,10 @@ class InsertionExperiment < Experiment
 		reversePrimer = Bio::Sequence::NA.new(@reversePrimerTemplate.snippet + @PPsnippet.snippet + @insertionSeq)
         reversePrimer.reverse_complement
 	end
+
+    def printForwardPrimer
+        "<span class='highlightPP'>#{@PPsnippet.to_s}</span>#{@insertSnippet.to_s}#{@forwardPrimerTemplate.to_s}"
+    end
 
 	def setMutatedTemplate
 		preMutSnippet = @template.backTranslate(@experimentString.split('+')[0])
